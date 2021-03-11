@@ -90,16 +90,16 @@
 <script>
 import Vector from "ol/layer/Vector";
 
-import CorineLegend from "@/components/WildLandFills/CorineLegend";
-import DialogSettings from "@/components/WildLandFills/DialogSettings";
-import Attributions from "@/components/WildLandFills/Attributions";
-import DrawDialog from "@/components/WildLandFills/DrawDialog";
-import MeasureDialog from "@/components/WildLandFills/MeasureDialog";
-import MeasureValuesDialog from "@/components/WildLandFills/MeasureValuesDialog";
-import LayersDialog from "@/components/WildLandFills/LayersDialog";
-import VectorLayersListDialog from "@/components/WildLandFills/VectorLayersListDialog";
-import VectorFeaturesDialog from "@/components/WildLandFills/VectorFeaturesDialog";
-import AddFeaturesDialog from "@/components/WildLandFills/AddFeaturesDialog";
+import CorineLegend from "@/components/SpatialData/CorineLegend";
+import DialogSettings from "@/components/SpatialData/DialogSettings";
+import Attributions from "@/components/SpatialData/Attributions";
+import DrawDialog from "@/components/SpatialData/DrawDialog";
+import MeasureDialog from "@/components/SpatialData/MeasureDialog";
+import MeasureValuesDialog from "@/components/SpatialData/MeasureValuesDialog";
+import LayersDialog from "@/components/SpatialData/LayersDialog";
+import VectorLayersListDialog from "@/components/SpatialData/VectorLayersListDialog";
+import VectorFeaturesDialog from "@/components/SpatialData/VectorFeaturesDialog";
+import AddFeaturesDialog from "@/components/SpatialData/AddFeaturesDialog";
 
 import {
   homeViewMap,

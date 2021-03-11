@@ -1,7 +1,7 @@
 # Vue Web Map
 
 ### `Description`
-Demo WEB GIS App for registering Wild LandFills. 
+Demo WEB GIS App for registering Spatial analysis. 
 
 * Used tools:
     * https://openlayers.org/
