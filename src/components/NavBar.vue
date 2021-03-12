@@ -2,7 +2,7 @@
   <nav>
     <v-toolbar app>
       <v-toolbar-side-icon @click="UpdateSidePanel()"></v-toolbar-side-icon>
-      <v-toolbar-title class="font-weight-light"> Mapping Wild Landfills
+      <v-toolbar-title class="font-weight-light"> Spatial Data
       </v-toolbar-title>
     </v-toolbar>
 
@@ -10,9 +10,9 @@
       <v-layout column align-center>
         <v-flex class="mt-5">
           <v-avatar size="100">
-            <img :src="wildLandFills" />
+            <img :src="logo" />
           </v-avatar>
-          <p class="gray--text subheading mt-1">Wild Landfills</p>
+          <p class="gray--text subheading mt-1">Spatial Data</p>
         </v-flex>
       </v-layout>
       <v-list>
@@ -29,16 +29,16 @@
   </nav>
 </template>
 <script>
-import logo from "@/assets/images/navbar.jpg";
+import _logo from "@/assets/images/navbar.jpg";
 
 export default {
   data() {
     return {
-      wildLandFills: logo,
+      logo: _logo,
       dispatch: this.$store.dispatch,
       drawer: false,
       links: [
-        { icon: "maps", text: "Wild LandFills Map", route: "/" },
+        { icon: "maps", text: "Spatial Data", route: "/" },
         { icon: "code", text: "Features", route: "/features" }
       ]
     };
