@@ -110,6 +110,11 @@ import {
 import {mapActions} from 'vuex';
 import {MoveDialogs} from "../helpers/vuetifyHelper";
 const movebleDialogs = MoveDialogs();
+
+
+
+
+const mapMenu = require("ol-contextmenu");
 export default {
   components: {
     CorineLegend,
@@ -125,6 +130,36 @@ export default {
   },
   data() {
     return {
+      contextmenuItems: [
+  {
+    text: 'Center map here',
+    classname: 'bold',
+    icon: "",
+    callback: null
+  },
+  {
+    text: 'Some Actions',
+    icon: null,
+    items: [
+      {
+        text: 'Center map here',
+        icon: "",
+        callback: null
+      },
+      {
+        text: 'Add a Marker',
+        icon: "",
+        callback: null
+      }
+    ]
+  },
+  {
+    text: 'Add a Marker',
+    icon: "",
+    callback: null
+  },
+  '-' // this is a separator
+],
       toggleMapDragZoomInteraction: 0,
       fabRotation: true,
       is3d: false,
@@ -308,8 +343,33 @@ export default {
     }
   },
   mounted() {
+
+var contextmenu = new mapMenu({
+  width: 180,
+  items: this.contextmenuItems
+});
+this.get.olMap.addControl(contextmenu);
+
+
+
+
     var that = this;
     var highlight;
+
+contextmenu.on('open', function (evt) {
+  var feature =	that.get.olMap.forEachFeatureAtPixel(evt.pixel, ft => ft);
+  
+  if (feature && feature.get('type') === 'removable') {
+    contextmenu.clear();
+    // removeMarkerItem.data = { marker: feature };
+    // contextmenu.push(removeMarkerItem);
+  } else {
+    contextmenu.clear();
+    contextmenu.extend(that.contextmenuItems);
+    contextmenu.extend(contextmenu.getDefaultItems());
+  }
+});
+
     if (this.get._MEASURE_OPTIONS_ACTIVE) {
       this.get.olMap.on("pointermove", function(e) {
         if (e.dragging) {
