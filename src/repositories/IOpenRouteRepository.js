@@ -1,8 +1,11 @@
-import _repository from "./../repositories/Repository";
+import _repository from "./IRepository";
 
 const route = "/api/OpenRoute";
 export default {
-    getDirectionData(getRouteDTO) {
-        return Repository.get(`${route}/GetRouteAsync/${getRouteDTO}`).catch(error => console.log(error));
+    async getDirectionData(getRouteDTO) {
+        const fromQuery = `Profile=${getRouteDTO.Profile}&StartLongitude=${getRouteDTO.StartLongitude}
+        &StartLatitude=${getRouteDTO.StartLatitude}&EndLongitude=${getRouteDTO.EndLongitude}&EndLatitude=${getRouteDTO.EndLatitude}`;
+
+        return _repository.get(`${route}/GetDirections/?${fromQuery}`).catch(error => console.log(error));
     }
 };

@@ -26,8 +26,8 @@
       </v-tooltip>
 
       <v-tooltip right>
-        <v-btn absolute id="zoomOut" @click="zoomToRectangle()" dark fab top left small color="purple" class="mt-7" slot="activator">
-          <v-icon>tab_unselected</v-icon>
+        <v-btn absolute id="zoomOut" @click="fetchRouteData()" dark fab top left small color="purple" class="mt-7" slot="activator">
+          <v-icon>timeline</v-icon>
         </v-btn>
         <span>{{enableDragZoom}}</span>
       </v-tooltip>
@@ -107,63 +107,9 @@ import {
   formatArea,
   formatLength
 } from "../../scripts/mapConfig";
-
-(function() {
-  // make vuetify dialogs movable
-  const d = {};
-  document.addEventListener("mousedown", e => {
-    const closestDialog = e.target.closest(".v-dialog.v-dialog--active");
-    if (
-      e.button === 0 &&
-      closestDialog != null &&
-      e.target.classList.contains("v-card__title")
-    ) {
-      // element which can be used to move element
-      d.el = closestDialog; // element which should be moved
-      d.mouseStartX = e.clientX;
-      d.mouseStartY = e.clientY;
-      d.elStartX = d.el.getBoundingClientRect().left;
-      d.elStartY = d.el.getBoundingClientRect().top;
-      d.el.style.position = "fixed";
-      d.el.style.margin = 0;
-      d.oldTransition = d.el.style.transition;
-      d.el.style.transition = "none";
-    }
-  });
-  document.addEventListener("mousemove", e => {
-    if (d.el === undefined) return;
-    d.el.style.left =
-      Math.min(
-        Math.max(d.elStartX + e.clientX - d.mouseStartX, 0),
-        window.innerWidth - d.el.getBoundingClientRect().width
-      ) + "px";
-    d.el.style.top =
-      Math.min(
-        Math.max(d.elStartY + e.clientY - d.mouseStartY, 0),
-        window.innerHeight - d.el.getBoundingClientRect().height
-      ) + "px";
-  });
-  document.addEventListener("mouseup", () => {
-    if (d.el === undefined) return;
-    d.el.style.transition = d.oldTransition;
-    d.el = undefined;
-  });
-  setInterval(() => {
-    // prevent out of bounds
-    const dialog = document.querySelector(".v-dialog.v-dialog--active");
-    if (dialog === null) return;
-    dialog.style.left =
-      Math.min(
-        parseInt(dialog.style.left),
-        window.innerWidth - dialog.getBoundingClientRect().width
-      ) + "px";
-    dialog.style.top =
-      Math.min(
-        parseInt(dialog.style.top),
-        window.innerHeight - dialog.getBoundingClientRect().height
-      ) + "px";
-  }, 100);
-})();
+import {mapActions} from 'vuex';
+import {MoveDialogs} from "../helpers/vuetifyHelper";
+const movebleDialogs = MoveDialogs();
 export default {
   components: {
     CorineLegend,
@@ -192,6 +138,9 @@ export default {
     };
   },
   methods: {
+     ...mapActions([
+      'LOAD_ASYNC_DIRECTION_DATA'
+    ]),
     Interactions() {
       // show button for reseting rotation if rotation exists
       if (this.get.view.getRotation() > 0 || this.get.view.getRotation() < 0) {
@@ -247,16 +196,20 @@ export default {
         duration: 2000
       });
     },
-    zoomToRectangle() {
-      if (this.toggleMapDragZoomInteraction == 0) {
-        this.get.olMap.addInteraction(this.get._DRAG_ZOOM_INTERACTION);
-        this.toggleMapDragZoomInteraction = 1;
-        this.enableDragZoom = "Disable zoom to rectangle";
-      } else {
-        this.get.olMap.removeInteraction(this.get._DRAG_ZOOM_INTERACTION);
-        this.toggleMapDragZoomInteraction = 0;
-        this.enableDragZoom = "Enable zoom to rectangle";
+  async fetchRouteData() {
+      const getRouteDTO = {
+        Profile: "driving-car",
+        StartLongitude: 8.681495,
+        StartLatitude: 49.41461,
+        EndLongitude:8.687872,
+        EndLatitude:49.420318
       }
+
+    await this.LOAD_ASYNC_DIRECTION_DATA(getRouteDTO);
+    let test1 = this.get._DIRECTION_WAYPOINTS_;
+
+    // https://stackoverflow.com/questions/3733227/javascript-seconds-to-minutes-and-seconds/3733257
+  console.log(test1);
     },
     setRotation() {
       var view = this.get.olMap.getView();
