@@ -144,7 +144,7 @@ export default {
       {
         text: 'Center map here',
         icon: "",
-        callback: null
+        callback: this.centerMap
       },
       {
         text: 'Add a Marker',
@@ -229,6 +229,12 @@ export default {
         zoom: 8,
         center: this.homeView,
         duration: 2000
+      });
+    },
+    centerMap(map) {
+      this.get.olMap.getView().animate({
+        duration: 700,
+        center: map.coordinate
       });
     },
   async fetchRouteData() {
@@ -344,7 +350,7 @@ export default {
   },
   mounted() {
 
-var contextmenu = new mapMenu({
+const contextmenu = new mapMenu({
   width: 180,
   items: this.contextmenuItems
 });
