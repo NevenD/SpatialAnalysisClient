@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Map from './views/Map.vue'
-import Features from './views/Features.vue'
 
 
 Vue.use(Router)
@@ -15,12 +14,6 @@ export default new Router({
       name: 'map',
       component: Map,
       meta: { keepAlive: true }
-    },
-    {
-      path: '/features',
-      name: 'features',
-      component: Features
-    },
-
+    }
   ]
 })

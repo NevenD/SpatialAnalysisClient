@@ -36,7 +36,6 @@ export default {
                 .then(data => {
                     if (data.data) {
                         const routeData = data.data;
-                        console.log(routeData);
                         const routeCoordinates = routeData.features[0].geometry.coordinates;
                         const routeWaypoints = routeData.features[0].properties.segments[0].steps;
                         commit('SET_ASYNC_DIRECTION_DATA', routeData);

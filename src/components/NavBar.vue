@@ -1,11 +1,9 @@
 <template>
   <nav>
     <v-toolbar app>
-      <v-toolbar-side-icon @click="UpdateSidePanel()"></v-toolbar-side-icon>
       <v-toolbar-title class="font-weight-light"> Spatial Data
       </v-toolbar-title>
     </v-toolbar>
-
     <v-navigation-drawer v-model="drawer" light app>
       <v-layout column align-center>
         <v-flex class="mt-5">
@@ -36,20 +34,13 @@ export default {
     return {
       logo: _logo,
       dispatch: this.$store.dispatch,
-      drawer: false,
+      drawer: true,
       links: [
         { icon: "maps", text: "Spatial Data", route: "/" },
-        { icon: "code", text: "Features", route: "/features" }
       ]
     };
   },
-  methods: {
-    UpdateSidePanel() {
-      this.drawer = !this.drawer;
-      let value = this.drawer;
-      this.dispatch("_UpdateSideBarePanel_", value);
-    }
-  }
+
 };
 </script>
 
