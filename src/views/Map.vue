@@ -45,7 +45,7 @@
         </v-btn>
       </v-fab-transition>
       <v-fab-transition>
-        <v-btn @click.prevent="vectorList()" v-show="ShowVectorList" absolute light fab top left small class="mt-10">
+        <v-btn @click.prevent="vectorList()" v-show="ShowRouterMap" absolute light fab top left small class="mt-10">
           <v-icon>list</v-icon>
         </v-btn>
       </v-fab-transition>
@@ -105,14 +105,11 @@ import {
   homeViewMap,
   attributionControl,
   formatArea,
-  formatLength
+  formatLength,
 } from "../../scripts/mapConfig";
-import {mapActions} from 'vuex';
-import {MoveDialogs} from "../helpers/vuetifyHelper";
+import { mapActions } from "vuex";
+import { MoveDialogs } from "../helpers/vuetifyHelper";
 const movebleDialogs = MoveDialogs();
-
-
-
 
 const mapMenu = require("ol-contextmenu");
 export default {
@@ -126,40 +123,40 @@ export default {
     LayersDialog,
     VectorLayersListDialog,
     VectorFeaturesDialog,
-    AddFeaturesDialog
+    AddFeaturesDialog,
   },
   data() {
     return {
       contextmenuItems: [
-  {
-    text: 'Center map here',
-    classname: 'bold',
-    icon: "",
-    callback: null
-  },
-  {
-    text: 'Some Actions',
-    icon: null,
-    items: [
-      {
-        text: 'Center map here',
-        icon: "",
-        callback: this.centerMap
-      },
-      {
-        text: 'Add a Marker',
-        icon: "",
-        callback: null
-      }
-    ]
-  },
-  {
-    text: 'Add a Marker',
-    icon: "",
-    callback: null
-  },
-  '-' // this is a separator
-],
+        {
+          text: "Center map here",
+          classname: "bold",
+          icon: "",
+          callback: null,
+        },
+        {
+          text: "Some Actions",
+          icon: null,
+          items: [
+            {
+              text: "Center map here",
+              icon: "",
+              callback: this.centerMap,
+            },
+            {
+              text: "Add a Marker",
+              icon: "",
+              callback: null,
+            },
+          ],
+        },
+        {
+          text: "Add a Marker",
+          icon: "",
+          callback: null,
+        },
+        "-", // this is a separator
+      ],
       toggleMapDragZoomInteraction: 0,
       fabRotation: true,
       is3d: false,
@@ -169,13 +166,11 @@ export default {
       dispatch: this.$store.dispatch,
       get: this.$store.getters,
       SHAPE_FILES: new Vector(),
-      enableDragZoom: "Enable zoom to rectangle"
+      enableDragZoom: "Enable zoom to rectangle",
     };
   },
   methods: {
-     ...mapActions([
-      'LOAD_ASYNC_DIRECTION_DATA'
-    ]),
+    ...mapActions(["LOAD_ASYNC_DIRECTION_DATA"]),
     Interactions() {
       // show button for reseting rotation if rotation exists
       if (this.get.view.getRotation() > 0 || this.get.view.getRotation() < 0) {
@@ -191,11 +186,8 @@ export default {
       var zoom = this.get.view.getZoom();
       view.animate({
         zoom: zoom + 1,
-        duration: 750
+        duration: 750,
       });
-    },
-    legendCorine() {
-      this.dispatch("_UpdateDialogLegend_", true);
     },
     vectorList() {
       this.dispatch("_UpdateDialogVectorList_", true);
@@ -220,7 +212,7 @@ export default {
       var zoom = this.get.view.getZoom();
       view.animate({
         zoom: zoom - 1,
-        duration: 750
+        duration: 750,
       });
     },
     home() {
@@ -228,41 +220,41 @@ export default {
       view.animate({
         zoom: 8,
         center: this.homeView,
-        duration: 2000
+        duration: 2000,
       });
     },
     centerMap(map) {
       this.get.olMap.getView().animate({
         duration: 700,
-        center: map.coordinate
+        center: map.coordinate,
       });
     },
-  async fetchRouteData() {
+    async fetchRouteData() {
       const getRouteDTO = {
         Profile: "driving-car",
         StartLongitude: 8.681495,
         StartLatitude: 49.41461,
-        EndLongitude:8.687872,
-        EndLatitude:49.420318
-      }
+        EndLongitude: 8.687872,
+        EndLatitude: 49.420318,
+      };
 
-    await this.LOAD_ASYNC_DIRECTION_DATA(getRouteDTO);
-    let test1 = this.get._DIRECTION_WAYPOINTS_;
+      await this.LOAD_ASYNC_DIRECTION_DATA(getRouteDTO);
+      let test1 = this.get._DIRECTION_WAYPOINTS_;
+      this.dispatch("_UpdateSideBarePanel_", true);
 
-    // https://stackoverflow.com/questions/3733227/javascript-seconds-to-minutes-and-seconds/3733257
-  console.log(test1);
+      console.log(test1);
     },
     setRotation() {
       var view = this.get.olMap.getView();
       view.animate({
         rotation: 0,
-        duration: 1200
+        duration: 1200,
       });
       this.dispatch("_UPDATE_ROTATION_", 0);
-    }
+    },
   },
   computed: {
-    ShowVectorList() {
+    ShowRouterMap() {
       return this.get.vectorListFAB;
     },
     ShowVectorShpList() {
@@ -279,7 +271,7 @@ export default {
     },
     GetMeasure() {
       return this.get._MEASURE_VALUE;
-    }
+    },
   },
   watch: {
     GetRotation: function(val) {
@@ -287,7 +279,7 @@ export default {
 
       this.get.view.animate({
         rotation: rotationValue,
-        duration: 1200
+        duration: 1200,
       });
     },
     GetMeasure: function(val) {
@@ -346,35 +338,31 @@ export default {
       this.$nextTick(() => {
         this.get.olMap.updateSize();
       });
-    }
+    },
   },
   mounted() {
-
-const contextmenu = new mapMenu({
-  width: 180,
-  items: this.contextmenuItems
-});
-this.get.olMap.addControl(contextmenu);
-
-
-
+    const contextmenu = new mapMenu({
+      width: 180,
+      items: this.contextmenuItems,
+    });
+    this.get.olMap.addControl(contextmenu);
 
     var that = this;
     var highlight;
 
-contextmenu.on('open', function (evt) {
-  var feature =	that.get.olMap.forEachFeatureAtPixel(evt.pixel, ft => ft);
-  
-  if (feature && feature.get('type') === 'removable') {
-    contextmenu.clear();
-    // removeMarkerItem.data = { marker: feature };
-    // contextmenu.push(removeMarkerItem);
-  } else {
-    contextmenu.clear();
-    contextmenu.extend(that.contextmenuItems);
-    contextmenu.extend(contextmenu.getDefaultItems());
-  }
-});
+    contextmenu.on("open", function(evt) {
+      var feature = that.get.olMap.forEachFeatureAtPixel(evt.pixel, (ft) => ft);
+
+      if (feature && feature.get("type") === "removable") {
+        contextmenu.clear();
+        // removeMarkerItem.data = { marker: feature };
+        // contextmenu.push(removeMarkerItem);
+      } else {
+        contextmenu.clear();
+        contextmenu.extend(that.contextmenuItems);
+        contextmenu.extend(contextmenu.getDefaultItems());
+      }
+    });
 
     if (this.get._MEASURE_OPTIONS_ACTIVE) {
       this.get.olMap.on("pointermove", function(e) {
@@ -390,7 +378,7 @@ contextmenu.on('open', function (evt) {
           {
             layerFilter: function(layer) {
               return layer.get("layer_name") === "fields";
-            }
+            },
           }
         );
         if (feature !== highlight) {
@@ -408,53 +396,19 @@ contextmenu.on('open', function (evt) {
           : "";
       });
       // Read geojson properties on click
-      this.get.olMap.on("click", function(e) {
-        // delete all previous data properties
-        that.dispatch("_DELETE_ALL_PROPERTIES_", null);
-
-        // get vector fields
-        let vectorSource = that.get._GEOJSON_CRO_FIELDS.getSource();
-
-        //get vectors on clicked coordinates
-        let features = vectorSource.getFeaturesAtCoordinate(e.coordinate);
-        if (features.length > 0) {
-          let data = features[0];
-          // save data properties to vuex state
-
-          // save properties to vuex
-          that.dispatch("_UPDATE_PROPERTY_NAME_", data.get("Name"));
-          that.dispatch("_UPDATE_PROPERTY_DESC_", data.get("Description"));
-          that.dispatch("_UPDATE_PROPERTY_LOCATION_", data.get("Location"));
-          that.dispatch(
-            "_UPDATE_PROPERTY_CATEGORY_TYPE_",
-            data.get("Category_Type")
-          );
-          that.dispatch("_UPDATE_PROPERTY_AREA_", data.get("Area"));
-          that.dispatch("_UPDATE_PROPERTY_DATE_", data.get("Date"));
-
-          setTimeout(() => {
-            // open modal with data properties
-            that.dispatch("_UpdateDialogFeatures_", true);
-          }, 100);
-        }
-      });
+      // this.get.olMap.on("click", () => {
+      //   setTimeout(() => {
+      //     // open modal with data properties
+      //     that.dispatch("_UpdateDialogFeatures_", true);
+      //   }, 100);
+      // });
     }
-
-    // not good looking hack on updating features on start
-    this.get.olMap.on("pointermove", function(e) {
-      if (!e.dragging) {
-        let source = that.get._GEOJSON_CRO_FIELDS.getSource();
-        // update vector value features to vuex store
-        // update vector value features to vuex store
-        that.dispatch("_UPDATE_VECTOR_LIST", source.getFeatures());
-      }
-    });
 
     this.$nextTick(() => {
       this.get.olMap.setView(this.get.view);
       this.get.olMap.setTarget("map");
     });
-  }
+  },
 };
 </script>
 
@@ -579,4 +533,3 @@ contextmenu.on('open', function (evt) {
   text-shadow: 2px 2px 8px #f5f5f5 !important;
 }
 </style>
-

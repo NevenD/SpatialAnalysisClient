@@ -7,8 +7,8 @@ import XYZ from "ol/source/XYZ";
 import Attribution from "ol/control/Attribution";
 import ScaleLine from "ol/control/ScaleLine";
 import MouseWheelZoom from "ol/interaction/MouseWheelZoom";
-import DragZoom from 'ol/interaction/DragZoom';
-import { always } from 'ol/events/condition';
+import DragZoom from "ol/interaction/DragZoom";
+import { always } from "ol/events/condition";
 import { defaults as defaultInteractions } from "ol/interaction";
 import OverviewMap from "ol/control/OverviewMap";
 import MousePosition from "ol/control/MousePosition";
@@ -27,7 +27,6 @@ import Fill from "ol/style/Fill";
 import { getArea, getLength } from "ol/sphere";
 import BingMaps from "ol/source/BingMaps";
 
-
 //#region RASTER LAYERS
 let dguDofCro = new TileLayer({
   source: new TileWMS({
@@ -35,25 +34,27 @@ let dguDofCro = new TileLayer({
     params: {
       LAYERS: "DOF",
       FORMAT: "image/png",
-      TRANSPARENT: true
+      TRANSPARENT: true,
     },
     attributions: [],
-    name: "DOF_CRO"
-  })
+    name: "DOF_CRO",
+  }),
 });
 
 let bingMap = new TileLayer({
   source: new BingMaps({
     key: process.env.VUE_APP_BING,
     imagerySet: "Aerial",
-    culture: "en-us"
-  })
+    culture: "en-us",
+  }),
 });
 
 let mapboxMap = new TileLayer({
   source: new XYZ({
-    url: "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=" + process.env.VUE_APP_MAPBOX
-  })
+    url:
+      "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=" +
+      process.env.VUE_APP_MAPBOX,
+  }),
 });
 
 // weather map
@@ -61,20 +62,24 @@ let mapboxMap = new TileLayer({
 // in free plan we can use Weather maps 1.0
 let tempMap = new TileLayer({
   source: new XYZ({
-    url: "https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=" + process.env.VUE_APP_WEATHER
-  })
+    url:
+      "https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=" +
+      process.env.VUE_APP_WEATHER,
+  }),
 });
 
 let dguCadastral = new TileLayer({
   source: new TileWMS({
-    url: "https://oss.uredjenazemlja.hr/OssWebServices/inspireService/wms?token=" + process.env.VUE_APP_CADASTRE_RH,
+    url:
+      "https://oss.uredjenazemlja.hr/OssWebServices/inspireService/wms?token=" +
+      process.env.VUE_APP_CADASTRE_RH,
     params: {
       LAYERS: "CP.CadastralZoning,CP.CadastralParcel",
       FORMAT: "image/png",
-      TRANSPARENT: true
+      TRANSPARENT: true,
     },
-    zIndex: 9999
-  })
+    zIndex: 9999,
+  }),
 });
 
 let dguDofCro2016 = new TileLayer({
@@ -83,10 +88,10 @@ let dguDofCro2016 = new TileLayer({
     params: {
       LAYERS: "OI.OrthoImagery",
       FORMAT: "image/png",
-      TRANSPARENT: true
+      TRANSPARENT: true,
     },
-    attributions: []
-  })
+    attributions: [],
+  }),
 });
 
 let corineCro = new TileLayer({
@@ -95,10 +100,10 @@ let corineCro = new TileLayer({
     params: {
       LAYERS: "clc2018",
       FORMAT: "image/png",
-      TRANSPARENT: true
+      TRANSPARENT: true,
     },
-    attributions: []
-  })
+    attributions: [],
+  }),
 });
 
 let dguTK25Cro = new TileLayer({
@@ -107,28 +112,26 @@ let dguTK25Cro = new TileLayer({
     params: {
       LAYERS: "TK25",
       FORMAT: "image/png",
-      TRANSPARENT: true
+      TRANSPARENT: true,
     },
-    attributions: []
-  })
+    attributions: [],
+  }),
 });
 
 let openTopoMap = new TileLayer({
   source: new XYZ({
     url: "https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png",
-    attributions: []
-  })
+    attributions: [],
+  }),
 });
 
 let tileOSMMap = new TileLayer({
   source: new XYZ({
     url: "https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    attributions: []
-  })
+    attributions: [],
+  }),
 });
 //#endregion
-
-
 
 //#region DRAW LAYERS
 
@@ -138,18 +141,18 @@ let styleAfterDraw = new Style({
   }),
   stroke: new Stroke({
     color: "#fff",
-    width: 2
+    width: 2,
   }),
   image: new CircleStyle({
     radius: 7,
     fill: new Fill({
-      color: "#5df184ab"
+      color: "#5df184ab",
     }),
     stroke: new Stroke({
       color: "#fbfdff",
-      width: 2
-    })
-  })
+      width: 2,
+    }),
+  }),
 });
 let styleDuringDraw = new Style({
   fill: new Fill({
@@ -164,30 +167,30 @@ let styleDuringDraw = new Style({
   image: new CircleStyle({
     radius: 7,
     fill: new Fill({
-      color: "#5df184ab"
+      color: "#5df184ab",
     }),
     stroke: new Stroke({
       color: "#fbfdff",
-      width: 2
-    })
-  })
+      width: 2,
+    }),
+  }),
 });
 
 let vectordrawSource = new VectorSource();
 let vectorDrawLayer = new Vector({
   source: vectordrawSource,
   zIndex: 9998,
-  style: styleAfterDraw
+  style: styleAfterDraw,
 });
 
 let drawInteractionPolygon = new Draw({
   type: "Polygon",
   source: vectorDrawLayer.getSource(),
-  style: styleDuringDraw
+  style: styleDuringDraw,
 });
 
 let snapVectorDraw = new Snap({
-  source: vectorDrawLayer.getSource()
+  source: vectorDrawLayer.getSource(),
 });
 
 //#endregion
@@ -195,22 +198,22 @@ let snapVectorDraw = new Snap({
 //#region VECTOR LAYERS
 let sourceGeojson = new VectorSource({
   url: "geojson/odlagalista_otpada.geojson",
-  format: new GeoJSON()
+  format: new GeoJSON(),
 });
 
 let vectorCroFields = new Vector({
   source: sourceGeojson,
   style: new Style({
     fill: new Fill({
-      color: "#38888099"
+      color: "#38888099",
     }),
     stroke: new Stroke({
       color: "#fdffff",
-      width: 3
-    })
+      width: 3,
+    }),
   }),
   zIndex: 9998,
-  layer_name: "fields"
+  layer_name: "fields",
 });
 
 //#endregion
@@ -222,78 +225,77 @@ let geojson = new GeoJSON();
 let style = new Style({
   fill: new Fill({
     color: "#5df184ab",
-    width: 2
+    width: 2,
   }),
   stroke: new Stroke({
     color: "#fff",
-    width: 2
+    width: 2,
   }),
   image: new CircleStyle({
     radius: 7,
     fill: new Fill({
-      color: "#5df184ab"
+      color: "#5df184ab",
     }),
     stroke: new Stroke({
       color: "#fbfdff",
-      width: 2
-    })
-  })
+      width: 2,
+    }),
+  }),
 });
 
 let styleShapes = new Style({
   fill: new Fill({
     color: "#e23812ba",
-    width: 2
+    width: 2,
   }),
   stroke: new Stroke({
     color: "#fff",
-    width: 2
+    width: 2,
   }),
   image: new CircleStyle({
     radius: 7,
     fill: new Fill({
-      color: "#e23812"
+      color: "#e23812",
     }),
     stroke: new Stroke({
       color: "#fbfdff",
-      width: 2
-    })
-  })
+      width: 2,
+    }),
+  }),
 });
 
 let source = new VectorSource();
 let vector = new Vector({
   source: source,
   zIndex: 9998,
-  style: style
+  style: style,
 });
 
 let vectorShape = new VectorSource({ wrapX: false });
 let vectorShapes = new Vector({
   source: vectorShape,
   style: styleShapes,
-  zIndex: 9998
+  zIndex: 9998,
 });
 
 let drawArea = new Draw({
   type: "Polygon",
   source: vectorCroFields.getSource(),
-  style: style
+  style: style,
 });
 
 let drawPoint = new Draw({
   type: "Point",
-  source: vector.getSource()
+  source: vector.getSource(),
 });
 
-
 let snap = new Snap({
-  source: vector.getSource()
+  source: vector.getSource(),
 });
 
 let dragZoom = new DragZoom({
   duration: 500,
-  condition: always
+  condition: always,
 });
 //#endregion
 
@@ -304,65 +306,66 @@ let vectorMeasure = new Vector({
   source: sourceMeasure,
   style: new Style({
     fill: new Fill({
-      color: "rgb(255,255,255,0.3)"
+      color: "rgb(255,255,255,0.3)",
     }),
     stroke: new Stroke({
       color: "#f44336",
       lineCap: "square",
       lineDash: [10, 10],
-      width: 3
-    })
+      width: 3,
+    }),
   }),
-  zIndex: 99999
+  zIndex: 99999,
 });
 
 let styleMeasureArea = new Style({
   fill: new Fill({
-    color: "rgba(255, 255, 255, 0.3)"
+    color: "rgba(255, 255, 255, 0.3)",
   }),
   stroke: new Stroke({
     color: "#f44336",
     lineCap: "square",
     lineDash: [10, 10],
-    width: 2
+    width: 2,
   }),
   image: new CircleStyle({
     radius: 5,
     fill: new Fill({
-      color: "rgba(255, 255, 255, 0.2)"
+      color: "rgba(255, 255, 255, 0.2)",
     }),
     stroke: new Stroke({
-      color: "#f44336"
-    })
-  })
+      color: "#f44336",
+    }),
+  }),
 });
 
 let drawMeasureArea = new Draw({
   source: vectorMeasure.getSource(),
   type: "Polygon",
-  style: styleMeasureArea
+  style: styleMeasureArea,
 });
 
 let drawMeasureLength = new Draw({
   source: vectorMeasure.getSource(),
   type: "LineString",
-  style: styleMeasureArea
+  style: styleMeasureArea,
 });
 
-let formatArea = function (polygon) {
+let formatArea = function(polygon) {
   let area = getArea(polygon);
 
   let output;
   let supValue = "2";
   if (area > 50000) {
-    output = Math.round((area / 1000000) * 100) / 100 + " " + "km" + supValue.sup();
+    output =
+      Math.round((area / 1000000) * 100) / 100 + " " + "km" + supValue.sup();
   } else {
     output = Math.round(area * 100) / 100 + " " + "m" + supValue.sup();
   }
   return output;
 };
 
-let formatLength = function (line) {
+let formatLength = function(line) {
   let length = getLength(line);
   let output;
   if (length > 1000) {
@@ -379,17 +382,17 @@ let formatLength = function (line) {
 
 let attributionControl = new Attribution({
   collapsible: false,
-  collapsed: false
+  collapsed: false,
 });
 
 let miniMap = new OverviewMap({
   className: "ol-overviewmap ol-custom-overviewmap",
   collapsed: false,
-  collapsible: false
+  collapsible: false,
 });
 
 let scaleLine = new ScaleLine({
-  className: "ol-scale-line-vue"
+  className: "ol-scale-line-vue",
 });
 
 let coords = document.getElementById("cords");
@@ -400,31 +403,30 @@ let mousePositionControl = new MousePosition({
   // comment the following two lines to have the mouse position
   // be placed within the map.
   className: "ol-mouse-position",
-  undefinedHTML: "...outside map..."
+  undefinedHTML: "...outside map...",
 });
 
 let homeViewMap = fromLonLat([16.207458, 44.652329]);
 //#endregion
-
 
 //#region MAP WITH VIEW
 let map = new Map({
   interactions: defaultInteractions({
     mouseWheelZoom: false,
     doubleClickZoom: false,
-    snapVectorDraw
+    snapVectorDraw,
   }).extend([
     new MouseWheelZoom({
-      duration: 750
-    })
+      duration: 750,
+    }),
   ]),
-  layers: [dguDofCro, vectorCroFields, vectorShapes, vectorMeasure],
-  controls: []
+  layers: [dguDofCro, vectorShapes, vectorMeasure],
+  controls: [],
 });
 let view = new View({
   center: homeViewMap,
   zoom: 8,
-  projection: "EPSG:3857"
+  projection: "EPSG:3857",
 });
 
 //#endregion
@@ -435,15 +437,50 @@ let vectorOverlayCro = new Vector({
   map: map,
   style: new Style({
     fill: new Fill({
-      color: "#4caf508f"
+      color: "#4caf508f",
     }),
     stroke: new Stroke({
       color: "#fff",
-      width: 2
-    })
-  })
+      width: 2,
+    }),
+  }),
 });
 
 //#endregion
 
-export { map, view, homeViewMap, vectorDrawLayer, drawInteractionPolygon, snapVectorDraw, dguDofCro, dguCadastral, bingMap, mapboxMap, tempMap, openTopoMap, tileOSMMap, dguDofCro2016, dguTK25Cro, corineCro, attributionControl, miniMap, scaleLine, mousePositionControl, source, geojson, vector, vectorShapes, drawArea, drawPoint, snap, drawMeasureArea, drawMeasureLength, formatArea, formatLength, vectorMeasure, vectorCroFields, vectorOverlayCro, dragZoom };
+export {
+  map,
+  view,
+  homeViewMap,
+  vectorDrawLayer,
+  drawInteractionPolygon,
+  snapVectorDraw,
+  dguDofCro,
+  dguCadastral,
+  bingMap,
+  mapboxMap,
+  tempMap,
+  openTopoMap,
+  tileOSMMap,
+  dguDofCro2016,
+  dguTK25Cro,
+  corineCro,
+  attributionControl,
+  miniMap,
+  scaleLine,
+  mousePositionControl,
+  source,
+  geojson,
+  vector,
+  vectorShapes,
+  drawArea,
+  drawPoint,
+  snap,
+  drawMeasureArea,
+  drawMeasureLength,
+  formatArea,
+  formatLength,
+  vectorMeasure,
+  vectorOverlayCro,
+  dragZoom,
+};
