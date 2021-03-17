@@ -78,11 +78,13 @@ export default {
     DeleteRouteAndCloseSidebar() {
       this.dispatch("_DELETE_DIRECTION_WAYPOINTS_", []);
 
-      // clear source
-      const vectorRoute = this.get._VECTOR_ROUTE;
+      const vectorRoute = this.get._VECTOR_ROUTE_LAYER;
       const vectorRouteSource = vectorRoute.getSource();
       vectorRouteSource.clear();
 
+      const vectorRoutePoint = this.get._VECTOR_ROUTE_POINTS_LAYER;
+      const vectorRoutePointSource = vectorRoutePoint.getSource();
+      vectorRoutePointSource.clear();
       setTimeout(() => {
         this.dispatch("_UpdateSideBarePanel_", false);
       }, 500);

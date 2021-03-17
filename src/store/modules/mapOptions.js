@@ -25,6 +25,7 @@ import {
   vectorRoute,
   vectorOverlayCro,
   dragZoom,
+  vectorRoutePoints,
 } from "../../../scripts/mapConfig";
 
 const state = {
@@ -85,6 +86,7 @@ const state = {
   PROPERTY_DATE: null,
   VECTOR_LIST: null,
   VECTOR_ROUTE: vectorRoute,
+  VECTOR_ROUTE_POINTS: vectorRoutePoints,
 };
 
 const getters = {
@@ -238,8 +240,11 @@ const getters = {
   _VECTOR_LIST: (state) => {
     return state.VECTOR_LIST;
   },
-  _VECTOR_ROUTE: (state) => {
+  _VECTOR_ROUTE_LAYER: (state) => {
     return state.VECTOR_ROUTE;
+  },
+  _VECTOR_ROUTE_POINTS_LAYER: (state) => {
+    return state.VECTOR_ROUTE_POINTS;
   },
 };
 

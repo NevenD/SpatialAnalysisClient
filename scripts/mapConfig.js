@@ -214,16 +214,34 @@ let vectorCroFields = new Vector({
   layer_name: "fields",
 });
 
+let lightStroke = new Style({
+  stroke: new Stroke({
+    color: [255, 255, 255, 1],
+    width: 3,
+    lineDash: [4, 8],
+    lineDashOffset: 6,
+  }),
+});
+
+let darkStroke = new Style({
+  stroke: new Stroke({
+    color: [0, 0, 0, 1],
+    width: 3,
+    lineDash: [4, 8],
+  }),
+});
+
 let vectorRoute = new Vector({
   source: new VectorSource({}),
-  style: new Style({
-    stroke: new Stroke({
-      color: "red",
-      width: 3,
-    }),
-  }),
+  style: [lightStroke, darkStroke],
   zIndex: 9998,
   layer_name: "routes",
+});
+
+let vectorRoutePoints = new Vector({
+  source: new VectorSource({}),
+  zIndex: 9998,
+  layer_name: "points",
 });
 
 //#endregion
@@ -430,7 +448,13 @@ let map = new Map({
       duration: 750,
     }),
   ]),
-  layers: [dguDofCro, vectorShapes, vectorMeasure, vectorRoute],
+  layers: [
+    dguDofCro,
+    vectorShapes,
+    vectorMeasure,
+    vectorRoute,
+    vectorRoutePoints,
+  ],
   controls: [],
 });
 let view = new View({
@@ -494,4 +518,5 @@ export {
   vectorMeasure,
   vectorOverlayCro,
   dragZoom,
+  vectorRoutePoints,
 };

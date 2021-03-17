@@ -89,6 +89,7 @@
 
 <script>
 import Vector from "ol/layer/Vector";
+import Point from "ol/geom/Point";
 
 import CorineLegend from "@/components/SpatialData/CorineLegend";
 import DialogSettings from "@/components/SpatialData/DialogSettings";
@@ -100,13 +101,15 @@ import LayersDialog from "@/components/SpatialData/LayersDialog";
 import VectorLayersListDialog from "@/components/SpatialData/VectorLayersListDialog";
 import VectorFeaturesDialog from "@/components/SpatialData/VectorFeaturesDialog";
 import AddFeaturesDialog from "@/components/SpatialData/AddFeaturesDialog";
-
+import _startPoint from "@/assets/images/number_1.png";
+import _endPoint from "@/assets/images/number_2.png";
 import {
   homeViewMap,
   attributionControl,
   formatArea,
   formatLength,
 } from "../../scripts/mapConfig";
+import { Icon, Style } from "ol/style";
 import Feature from "ol/Feature";
 import LineString from "ol/geom/LineString";
 import { mapActions } from "vuex";
@@ -129,6 +132,8 @@ export default {
   },
   data() {
     return {
+      startPoint: _startPoint,
+      endPoint: _endPoint,
       contextmenuItems: [
         {
           text: "Center map here",
@@ -249,21 +254,51 @@ export default {
       for (let coord of coords) {
         featureCoords.push(coord);
       }
+      const vectorRouteLayer = this.get._VECTOR_ROUTE_LAYER;
+      const vectorRouteSource = vectorRouteLayer.getSource();
+
       const linestring = new Feature(new LineString(featureCoords));
       let extent = linestring.getGeometry().getExtent();
-      console.log(extent);
-      // console.log(this.get._SUMMARY_ROUTE_);
-      // console.log(this.get._START_POINT_);
-      // console.log(this.get._END_POINT_);
-
-      const vectorRoute = this.get._VECTOR_ROUTE;
-      const vectorRouteSource = vectorRoute.getSource();
       vectorRouteSource.addFeature(linestring);
-      // add feature to vectorsource
-
+      this.generateRouteStarEndPoints();
       this.get.olMap.getView().fit(extent, { duration: 1500 });
       // add vector source to vector layer and show it on map
       this.dispatch("_UpdateSideBarePanel_", true);
+    },
+    generateRouteStarEndPoints() {
+      const vectorPointsLayer = this.get._VECTOR_ROUTE_POINTS_LAYER;
+      const vectorPointsLayerSource = vectorPointsLayer.getSource();
+      // add feature to vectorsource
+      const startFeature = new Feature({
+        geometry: new Point(this.get._START_POINT_),
+        name: "Start Point",
+      });
+      const iconStartPoint = new Style({
+        image: new Icon({
+          anchor: [0.5, 40],
+          anchorXUnits: "fraction",
+          anchorYUnits: "pixels",
+          src: this.startPoint,
+        }),
+      });
+      startFeature.setStyle(iconStartPoint);
+
+      const endFeature = new Feature({
+        geometry: new Point(this.get._END_POINT_),
+        name: "End Point",
+      });
+      const iconEndPoint = new Style({
+        image: new Icon({
+          anchor: [0.5, 26],
+          anchorXUnits: "fraction",
+          anchorYUnits: "pixels",
+          src: this.endPoint,
+        }),
+      });
+      endFeature.setStyle(iconEndPoint);
+
+      vectorPointsLayerSource.addFeature(startFeature);
+      vectorPointsLayerSource.addFeature(endFeature);
     },
     setRotation() {
       var view = this.get.olMap.getView();
