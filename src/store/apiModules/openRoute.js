@@ -9,6 +9,7 @@ export default {
     _START_POINT: [],
     _END_POINT: [],
     _SUMMARY_ROUTE: null,
+    _BBOX_ROUTE: [],
   },
   getters: {
     _DIRECTION_DATA_: (state) => {
@@ -29,6 +30,9 @@ export default {
     _SUMMARY_ROUTE_: (state) => {
       return state._SUMMARY_ROUTE;
     },
+    _BBOX_ROUTE_: (state) => {
+      return state._BBOX_ROUTE;
+    },
   },
   mutations: {
     SET_ASYNC_DIRECTION_DATA(state, data) {
@@ -48,6 +52,9 @@ export default {
     },
     SET_ASYNC_SUMMARY(state, data) {
       state._SUMMARY_ROUTE = data;
+    },
+    SET_ASYNC_BBOX(state, data) {
+      state._BBOX_ROUTE = data;
     },
     DELETE_DIRECTION_WAYPOINTS(state, data) {
       state._DIRECTION_WAYPOINTS = data;
@@ -73,6 +80,7 @@ export default {
           commit("SET_ASYNC_START_POINT", startPoint);
           commit("SET_ASYNC_END_POINT", endPoint);
           commit("SET_ASYNC_SUMMARY", summary);
+          commit("SET_ASYNC_BBOX", routeData.bbox);
         }
       });
     },

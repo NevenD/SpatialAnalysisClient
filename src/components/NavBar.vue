@@ -36,7 +36,6 @@
           </v-expansion-panel>
       </v-card>
       <br>
-       <v-divider></v-divider>
               <div class="text-xs-center">
 
 <v-tooltip top>
@@ -105,7 +104,8 @@ export default {
       }, 500);
     },
     ZoomToRoute() {
-      // this.get.
+      const routeExtent = this.get._BBOX_ROUTE_;
+      this.get.olMap.getView().fit(routeExtent, { duration: 1500 });
     },
   },
   filters: {

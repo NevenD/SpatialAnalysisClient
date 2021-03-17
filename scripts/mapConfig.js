@@ -225,7 +225,7 @@ let lightStroke = new Style({
 
 let darkStroke = new Style({
   stroke: new Stroke({
-    color: [0, 0, 0, 1],
+    color: "red",
     width: 3,
     lineDash: [4, 8],
   }),
