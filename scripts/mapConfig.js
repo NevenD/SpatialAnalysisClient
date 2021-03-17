@@ -475,7 +475,7 @@ let vectorOverlayCro = new Vector({
     }),
     stroke: new Stroke({
       color: "#fff",
-      width: 2,
+      width: 4,
     }),
   }),
 });

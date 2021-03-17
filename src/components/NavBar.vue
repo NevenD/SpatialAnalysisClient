@@ -37,12 +37,27 @@
       </v-card>
       <br>
        <v-divider></v-divider>
-       <v-card flat class="card-text">
-    <v-btn block color="success" dark>Save route<v-icon right>add</v-icon></v-btn>
-       </v-card>
- <v-card flat class="card-text">
-    <v-btn block color="red" dark @click="DeleteRouteAndCloseSidebar()">  Delete route<v-icon right dark>delete_forever</v-icon></v-btn>
-       </v-card>
+              <div class="text-xs-center">
+
+<v-tooltip top>
+      <v-btn fab light small  slot="activator">
+        <v-icon dark>add</v-icon>
+      </v-btn>
+     <span>Save route</span>
+    </v-tooltip>
+    <v-tooltip top>
+      <v-btn fab light small @click="ZoomToRoute()" slot="activator">
+        <v-icon dark>zoom_in</v-icon>
+      </v-btn>
+     <span>Zoom to route</span>
+    </v-tooltip>
+      <v-tooltip top>
+      <v-btn fab dark color="red" small @click="DeleteRouteAndCloseSidebar()" slot="activator">
+        <v-icon dark>delete_forever</v-icon>
+      </v-btn>
+     <span>Delete route and close sidebar</span>
+    </v-tooltip>
+  </div>
     </v-navigation-drawer>
   </nav>
 </template>
@@ -88,6 +103,9 @@ export default {
       setTimeout(() => {
         this.dispatch("_UpdateSideBarePanel_", false);
       }, 500);
+    },
+    ZoomToRoute() {
+      // this.get.
     },
   },
   filters: {

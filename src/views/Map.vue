@@ -433,7 +433,7 @@ export default {
           },
           {
             layerFilter: function(layer) {
-              return layer.get("layer_name") === "fields";
+              return layer.get("layer_name") === "routes";
             },
           }
         );
