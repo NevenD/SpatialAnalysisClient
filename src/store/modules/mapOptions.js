@@ -1,8 +1,33 @@
-import { map, view, attributionControl, miniMap, tempMap, dguDofCro, dguCadastral, bingMap, mapboxMap, openTopoMap, tileOSMMap, dguDofCro2016, dguTK25Cro, corineCro, scaleLine, mousePositionControl, geojson, vector, vectorShapes, drawMeasureArea, drawMeasureLength, vectorMeasure, vectorCroFields, vectorOverlayCro, dragZoom } from "../../../scripts/mapConfig";
+import {
+  map,
+  view,
+  attributionControl,
+  miniMap,
+  tempMap,
+  dguDofCro,
+  dguCadastral,
+  bingMap,
+  mapboxMap,
+  openTopoMap,
+  tileOSMMap,
+  dguDofCro2016,
+  dguTK25Cro,
+  corineCro,
+  scaleLine,
+  mousePositionControl,
+  geojson,
+  vector,
+  vectorShapes,
+  drawMeasureArea,
+  drawMeasureLength,
+  vectorMeasure,
+  vectorCroFields,
+  vectorRoute,
+  vectorOverlayCro,
+  dragZoom,
+} from "../../../scripts/mapConfig";
 
 const state = {
-
-
   ShowDownloadKMLButton: false,
   CorineFAB: false,
   DrawVectorFAB: true,
@@ -59,165 +84,166 @@ const state = {
   PROPERTY_CATEGORY_TYPE: null,
   PROPERTY_DATE: null,
   VECTOR_LIST: null,
-
+  VECTOR_ROUTE: vectorRoute,
 };
 
 const getters = {
-  showDownloadKMLButton: state => {
+  showDownloadKMLButton: (state) => {
     return state.ShowDownloadKMLButton;
   },
-  corineFAB: state => {
+  corineFAB: (state) => {
     return state.CorineFAB;
   },
-  vectorListFAB: state => {
+  vectorListFAB: (state) => {
     return state.VectorListFAB;
   },
-  drawVectorFAB: state => {
-    return state.DrawVectorFAB
+  drawVectorFAB: (state) => {
+    return state.DrawVectorFAB;
   },
-  olMap: state => {
+  olMap: (state) => {
     return state.OLMAP;
   },
-  view: state => {
+  view: (state) => {
     return state.VIEW;
   },
-  miniMap: state => {
+  miniMap: (state) => {
     return state.MINIMAP;
   },
-  _DGU_DOF: state => {
+  _DGU_DOF: (state) => {
     return state.DGU_DOF;
   },
-  _DGU_CADASTRAL: state => {
+  _DGU_CADASTRAL: (state) => {
     return state.DGU_CADASTRAL;
   },
-  _DRAG_ZOOM_INTERACTION: state => {
+  _DRAG_ZOOM_INTERACTION: (state) => {
     return state.DRAG_ZOOM_INTERACTION;
   },
-  _BING: state => {
+  _BING: (state) => {
     return state.BING;
   },
-  _MAPBOX: state => {
+  _MAPBOX: (state) => {
     return state.MAPBOX;
   },
-  _OPENTOPO_MAP: state => {
+  _OPENTOPO_MAP: (state) => {
     return state.OPENTOPO_MAP;
   },
-  _OSM_MAP: state => {
+  _OSM_MAP: (state) => {
     return state.OSM_MAP;
   },
-  _AIR_TEMP_OPEN_WEATHER: state => {
+  _AIR_TEMP_OPEN_WEATHER: (state) => {
     return state.AIR_TEMP_OPEN_WEATHER;
   },
-  _DGU_DOF_2016: state => {
+  _DGU_DOF_2016: (state) => {
     return state.DGU_DOF_2016;
   },
-  _DGU_TK25: state => {
+  _DGU_TK25: (state) => {
     return state.DGU_TK25;
   },
-  _CORINE: state => {
+  _CORINE: (state) => {
     return state.CORINE;
   },
-  _ATTRIBUTION_CONTROL: state => {
+  _ATTRIBUTION_CONTROL: (state) => {
     return state.ATTRIBUTIONCONTROL;
   },
-  _ATTRIBUTIONS_PANEL: state => {
+  _ATTRIBUTIONS_PANEL: (state) => {
     return state.ATTRIBUTIONS_PANEL;
   },
-  _MEASURE_PANEL: state => {
+  _MEASURE_PANEL: (state) => {
     return state.MEASURE_PANEL;
   },
-  _SCALE_LINE: state => {
+  _SCALE_LINE: (state) => {
     return state.SCALELINE;
   },
-  _MOUSE_POSITION_CONTROL: state => {
+  _MOUSE_POSITION_CONTROL: (state) => {
     return state.MOUSE_POSITION_CONTROL;
   },
-  _DOF_ATTRIBUTIONS: state => {
+  _DOF_ATTRIBUTIONS: (state) => {
     return state.DOF_ATTRIBUTIONS;
   },
-  _TK_ATTRIBUTIONS: state => {
+  _TK_ATTRIBUTIONS: (state) => {
     return state.TK_ATTRIBUTIONS;
   },
-  _CORINE_ATTRIBUTIONS: state => {
+  _CORINE_ATTRIBUTIONS: (state) => {
     return state.CORINE_ATTRIBUTIONS;
   },
-  _BING_ATTRIBUTIONS: state => {
+  _BING_ATTRIBUTIONS: (state) => {
     return state.BING_ATTRIBUTIONS;
   },
-  _DRAW_OPTIONS: state => {
+  _DRAW_OPTIONS: (state) => {
     return state.DRAW_OPTIONS;
   },
-  _GEOJSON_OBJECT: state => {
+  _GEOJSON_OBJECT: (state) => {
     return state.GEOJSON_OBJECT;
   },
-  _GEOJSON_VECTOR: state => {
+  _GEOJSON_VECTOR: (state) => {
     return state.GEOJSON_VECTOR;
   },
-  _EXTENT_VECTOR: state => {
+  _EXTENT_VECTOR: (state) => {
     return state.EXTENT_VECTOR;
   },
-  _ROTATION: state => {
+  _ROTATION: (state) => {
     return state.ROTATION;
   },
-  _DRAW_VALUE: state => {
+  _DRAW_VALUE: (state) => {
     return state.DRAW_VALUE;
   },
-  _DRAW_SHAPE_VALUE: state => {
+  _DRAW_SHAPE_VALUE: (state) => {
     return state.DRAW_SHAPE_VALUE;
   },
-  _DRAW_MEASURE_AREA: state => {
+  _DRAW_MEASURE_AREA: (state) => {
     return state.DRAW_MEASURE_AREA;
   },
-  _DRAW_MEASURE_LENGTH: state => {
+  _DRAW_MEASURE_LENGTH: (state) => {
     return state.DRAW_MEASURE_LENGTH;
   },
-  _MEASURE_VALUE: state => {
+  _MEASURE_VALUE: (state) => {
     return state.MEASURE_VALUE;
   },
-  _MEASURE_OPTIONS_ACTIVE: state => {
+  _MEASURE_OPTIONS_ACTIVE: (state) => {
     return state.MEASURE_OPTIONS_ACTIVE;
   },
-  _MEASURE_VALUE_AREA: state => {
+  _MEASURE_VALUE_AREA: (state) => {
     return state.MEASURE_VALUE_AREA;
   },
-  _MEASURE_VALUE_LENGTH: state => {
+  _MEASURE_VALUE_LENGTH: (state) => {
     return state.MEASURE_VALUE_LENGTH;
   },
-  _MEASURE_VECTOR: state => {
+  _MEASURE_VECTOR: (state) => {
     return state.MEASURE_VECTOR;
   },
-  _GEOJSON_CRO_FIELDS: state => {
+  _GEOJSON_CRO_FIELDS: (state) => {
     return state.GEOJSON_CRO_FIELDS;
   },
-  _VECTOR_OVERLAY_CRO: state => {
+  _VECTOR_OVERLAY_CRO: (state) => {
     return state.VECTOR_OVERLAY_CRO;
   },
-  _PROPERTY_NAME: state => {
+  _PROPERTY_NAME: (state) => {
     return state.PROPERTY_NAME;
   },
-  _PROPERTY_LOCATION: state => {
+  _PROPERTY_LOCATION: (state) => {
     return state.PROPERTY_LOCATION;
   },
-  _PROPERTY_DESC: state => {
+  _PROPERTY_DESC: (state) => {
     return state.PROPERTY_DESC;
   },
-  _PROPERTY_AREA: state => {
+  _PROPERTY_AREA: (state) => {
     return state.PROPERTY_AREA;
   },
-  _PROPERTY_CATEGORY_TYPE: state => {
+  _PROPERTY_CATEGORY_TYPE: (state) => {
     return state.PROPERTY_CATEGORY_TYPE;
   },
-  _PROPERTY_DATE: state => {
+  _PROPERTY_DATE: (state) => {
     return state.PROPERTY_DATE;
   },
-  _VECTOR_LIST: state => {
+  _VECTOR_LIST: (state) => {
     return state.VECTOR_LIST;
   },
-
+  _VECTOR_ROUTE: (state) => {
+    return state.VECTOR_ROUTE;
+  },
 };
 
 const mutations = {
-
   _UpdateDownloadKMLButton_: (state, payload) => {
     state.ShowDownloadKMLButton = payload;
   },
@@ -311,11 +337,9 @@ const mutations = {
   _UPDATE_VECTOR_LIST: (state, payload) => {
     state.VECTOR_LIST = payload;
   },
-
 };
 
 const actions = {
-
   _UpdateCorineFAB_({ commit }, payload) {
     commit("_UpdateCorineFAB_", payload);
   },
@@ -395,13 +419,11 @@ const actions = {
   _UPDATE_VECTOR_LIST({ commit }, payload) {
     commit("_UPDATE_VECTOR_LIST", payload);
   },
-
-
 };
 
 export default {
   state,
   getters,
   mutations,
-  actions
+  actions,
 };

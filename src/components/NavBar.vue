@@ -13,19 +13,36 @@
           <p class="gray--text subheading mt-1">Spatial Data</p>
         </v-flex>
       </v-layout>
-    <v-card v-for="(waypoint, index) in GenerateWayPoints" :key="index" :hover="true">
-      <v-layout>
-        <v-flex xs2>
-      <v-card-text >{{index +1}}.</v-card-text>
-    </v-flex> 
-    <v-flex xs10 class="duration-segment-heigh">
-      <v-card-text class="card-text" >{{waypoint.instruction}}</v-card-text>
-      <v-card-text class="card-text grey--text ">{{waypoint.distance | distance}}</v-card-text>
-      <v-card-text class="card-text grey--text"><v-chip color="secondary" text-color="white">{{waypoint.duration | duration}}</v-chip>
-</v-card-text>
-    </v-flex> 
-      </v-layout>
-    </v-card>
+      <v-card class="card-overflow">
+      <v-expansion-panel light v-model="expandContent" expand focusable>
+            <v-expansion-panel-content>
+                <v-icon slot="actions" color="secondary">$vuetify.icons.expand</v-icon>
+              <div slot="header">Route waypoints</div>
+      <v-card v-for="(waypoint, index) in GenerateWayPoints" :key="index" :hover="true">
+          <v-layout>
+            <v-flex xs2>
+          <v-card-text >{{index +1}}.</v-card-text>
+        </v-flex> 
+        <v-flex xs10 class="duration-segment-low">
+          <v-card-text class="card-text" >{{waypoint.name}}</v-card-text>
+          <v-card-text class="card-text grey--text" >{{waypoint.instruction}}</v-card-text>
+          <v-card-text class="card-text grey--text ">{{waypoint.distance | distance}}</v-card-text>
+          <v-chip style="margin-bottom:10px;" color="secondary" text-color="white">{{waypoint.duration | duration}}</v-chip>
+        </v-flex> 
+          </v-layout>
+          <v-divider></v-divider>
+        </v-card >
+           </v-expansion-panel-content>
+          </v-expansion-panel>
+      </v-card>
+      <br>
+       <v-divider></v-divider>
+       <v-card flat class="card-text">
+    <v-btn block color="success" dark>Save route<v-icon right>add</v-icon></v-btn>
+       </v-card>
+ <v-card flat class="card-text">
+    <v-btn block color="red" dark @click="DeleteRouteAndCloseSidebar()">  Delete route<v-icon right dark>delete_forever</v-icon></v-btn>
+       </v-card>
     </v-navigation-drawer>
   </nav>
 </template>
@@ -35,12 +52,11 @@ import _logo from "@/assets/images/navbar.jpg";
 export default {
   data() {
     return {
+      expandContent: [true],
       logo: _logo,
       dispatch: this.$store.dispatch,
       get: this.$store.getters,
-      links: [{ icon: "maps", text: "Spatial Data", route: "/" }],
     };
-    // dodati computed value koji će prikazivati je li sidebar true ili false
   },
   computed: {
     ShowSideBar: {
@@ -59,6 +75,18 @@ export default {
     FormatTime(string, pad, length) {
       return (new Array(length + 1).join(pad) + string).slice(-length);
     },
+    DeleteRouteAndCloseSidebar() {
+      this.dispatch("_DELETE_DIRECTION_WAYPOINTS_", []);
+
+      // clear source
+      const vectorRoute = this.get._VECTOR_ROUTE;
+      const vectorRouteSource = vectorRoute.getSource();
+      vectorRouteSource.clear();
+
+      setTimeout(() => {
+        this.dispatch("_UpdateSideBarePanel_", false);
+      }, 500);
+    },
   },
   filters: {
     distance: (val) => {
@@ -72,11 +100,7 @@ export default {
     duration: (time) => {
       const minutes = Math.floor(time / 60);
       const seconds = time - minutes * 60;
-      const finalTime = `${(new Array(3).join("0") + minutes).slice(-2)}:${(
-        new Array(3).join("0") + seconds
-      ).slice(-2)}`;
-
-      return `Duration: ${minutes}:${Math.round(seconds, 0)}`;
+      return `Duration: ${minutes}:${Math.round(seconds, 0)} min`;
     },
   },
 };
@@ -90,10 +114,20 @@ export default {
   white-space: normal;
 }
 
-.card-text {
-  padding: 7px;
+.card-overflow {
+  overflow-y: auto;
+  max-height: 580px;
 }
 
+.card-button {
+  padding: 4px;
+}
+.card-text {
+  padding: 4px;
+}
+.card-text-title {
+  border-bottom: 1px solid lightgray;
+}
 .duration-segment-low {
   border-left: 3px solid #4caf50;
 }

@@ -5,24 +5,6 @@
       <v-card-title primary-title></v-card-title>
       <v-card-text>
         <v-layout row wrap align-center>
-          <v-expansion-panel light popout v-model="panel" expand focusable>
-            <v-expansion-panel-content>
-              <v-icon slot="actions" color="success">$vuetify.icons.expand</v-icon>
-              <div slot="header">Vector Layers</div>
-              <v-card>
-                <v-card-text class="grey lighten-3">
-                  <v-layout row>
-                    <v-flex md6>
-                      <v-switch v-model="vectorLandFills" color="success" id="vectorField" @change="onchangeVectorFields" label="Wild landfills"></v-switch>
-                    </v-flex>
-                    <v-flex md6>
-                      <v-slider :inverse-label="true" :disabled="slider.vector" color="green" append-icon="opacity" v-model="VectorOpacity" thumb-label></v-slider>
-                    </v-flex>
-                  </v-layout>
-                </v-card-text>
-              </v-card>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
           <v-expansion-panel light popout>
             <v-expansion-panel-content>
               <v-icon slot="actions" color="success">$vuetify.icons.expand</v-icon>
@@ -149,7 +131,7 @@ export default {
         url: {
           default: mapbox,
           dof: dof_rh,
-          tk: tk_rh
+          tk: tk_rh,
         },
         slider: {
           dof: false,
@@ -160,11 +142,11 @@ export default {
           topoOSM: true,
           osm: true,
           mapbox: false,
-          bing: true
+          bing: true,
         },
         urlCardimg: "",
         dispatch: this.$store.dispatch,
-        get: this.$store.getters
+        get: this.$store.getters,
       };
     }
   },
@@ -358,7 +340,7 @@ export default {
         this.CadastreOpacity = 100;
         this.get.olMap.removeLayer(this.get._DGU_CADASTRAL);
       }
-    }
+    },
   },
   computed: {
     DialogLayers: {
@@ -367,7 +349,7 @@ export default {
       },
       set: function() {
         this.dispatch("_UpdateDialogLayers_", false);
-      }
+      },
     },
     CadastreLayerVisibility() {
       // get current zoom number of map
@@ -385,7 +367,7 @@ export default {
         this.slider.cadastre = true;
         return false;
       }
-    }
+    },
   },
   watch: {
     DOFOpacity() {
@@ -414,14 +396,14 @@ export default {
     },
     OSMOpacity() {
       this.get._OSM_MAP.setOpacity(this.OSMOpacity / 100);
-    }
+    },
   },
   mounted() {
     this.$nextTick(() => {
       // show osm image on layers card
       this.urlCardimg = this.url.default;
     });
-  }
+  },
 };
 </script>
 <style>

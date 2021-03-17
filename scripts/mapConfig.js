@@ -25,6 +25,7 @@ import Stroke from "ol/style/Stroke";
 import CircleStyle from "ol/style/Circle";
 import Fill from "ol/style/Fill";
 import { getArea, getLength } from "ol/sphere";
+import Feature from "ol/Feature";
 import BingMaps from "ol/source/BingMaps";
 
 //#region RASTER LAYERS
@@ -196,10 +197,7 @@ let snapVectorDraw = new Snap({
 //#endregion
 
 //#region VECTOR LAYERS
-let sourceGeojson = new VectorSource({
-  url: "geojson/odlagalista_otpada.geojson",
-  format: new GeoJSON(),
-});
+let sourceGeojson = new VectorSource({});
 
 let vectorCroFields = new Vector({
   source: sourceGeojson,
@@ -214,6 +212,18 @@ let vectorCroFields = new Vector({
   }),
   zIndex: 9998,
   layer_name: "fields",
+});
+
+let vectorRoute = new Vector({
+  source: new VectorSource({}),
+  style: new Style({
+    stroke: new Stroke({
+      color: "red",
+      width: 3,
+    }),
+  }),
+  zIndex: 9998,
+  layer_name: "routes",
 });
 
 //#endregion
@@ -406,7 +416,7 @@ let mousePositionControl = new MousePosition({
   undefinedHTML: "...outside map...",
 });
 
-let homeViewMap = fromLonLat([16.207458, 44.652329]);
+let homeViewMap = [16.207458, 44.652329];
 //#endregion
 
 //#region MAP WITH VIEW
@@ -420,13 +430,13 @@ let map = new Map({
       duration: 750,
     }),
   ]),
-  layers: [dguDofCro, vectorShapes, vectorMeasure],
+  layers: [dguDofCro, vectorShapes, vectorMeasure, vectorRoute],
   controls: [],
 });
 let view = new View({
   center: homeViewMap,
   zoom: 8,
-  projection: "EPSG:3857",
+  projection: "EPSG:4326",
 });
 
 //#endregion
@@ -478,6 +488,7 @@ export {
   snap,
   drawMeasureArea,
   drawMeasureLength,
+  vectorRoute,
   formatArea,
   formatLength,
   vectorMeasure,

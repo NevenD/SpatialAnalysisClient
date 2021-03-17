@@ -25,12 +25,7 @@
         <span>Zoom out</span>
       </v-tooltip>
 
-      <v-tooltip right>
-        <v-btn absolute id="zoomOut" @click="fetchRouteData()" dark fab top left small color="purple" class="mt-7" slot="activator">
-          <v-icon>timeline</v-icon>
-        </v-btn>
-        <span>{{enableDragZoom}}</span>
-      </v-tooltip>
+  
 
       <v-tooltip right>
         <v-btn absolute id="home" @click="home()" light fab top left small class="mt-8" slot="activator">
@@ -38,17 +33,22 @@
         </v-btn>
         <span>Home view</span>
       </v-tooltip>
-
+    <v-tooltip right>
+        <v-btn absolute id="zoomOut" @click="fetchRouteData()"  fab top left small light class="mt-10" slot="activator">
+          <v-icon>timeline</v-icon>
+        </v-btn>
+        <span>{{enableDragZoom}}</span>
+      </v-tooltip>
       <v-fab-transition>
         <v-btn v-show="!fabRotation" @click="setRotation()" absolute light fab top left small class="mt-9">
           <v-icon>screen_rotation</v-icon>
         </v-btn>
       </v-fab-transition>
-      <v-fab-transition>
+      <!-- <v-fab-transition>
         <v-btn @click.prevent="vectorList()" v-show="ShowRouterMap" absolute light fab top left small class="mt-10">
           <v-icon>list</v-icon>
         </v-btn>
-      </v-fab-transition>
+      </v-fab-transition> -->
       <v-fab-transition>
         <v-btn @click.prevent="vectorShpList()" v-show="ShowVectorShpList" absolute light fab top left small class="mt-11">
           <v-icon>subject</v-icon>
@@ -107,6 +107,8 @@ import {
   formatArea,
   formatLength,
 } from "../../scripts/mapConfig";
+import Feature from "ol/Feature";
+import LineString from "ol/geom/LineString";
 import { mapActions } from "vuex";
 import { MoveDialogs } from "../helpers/vuetifyHelper";
 const movebleDialogs = MoveDialogs();
@@ -166,7 +168,7 @@ export default {
       dispatch: this.$store.dispatch,
       get: this.$store.getters,
       SHAPE_FILES: new Vector(),
-      enableDragZoom: "Enable zoom to rectangle",
+      enableDragZoom: "Route settings",
     };
   },
   methods: {
@@ -220,7 +222,7 @@ export default {
       view.animate({
         zoom: 8,
         center: this.homeView,
-        duration: 2000,
+        duration: 1000,
       });
     },
     centerMap(map) {
@@ -232,17 +234,36 @@ export default {
     async fetchRouteData() {
       const getRouteDTO = {
         Profile: "driving-car",
-        StartLongitude: 8.681495,
-        StartLatitude: 49.41461,
-        EndLongitude: 8.687872,
-        EndLatitude: 49.420318,
+        StartLongitude: 15.710697,
+        StartLatitude: 46.183814,
+        EndLongitude: 15.727079,
+        EndLatitude: 46.169287,
       };
 
       await this.LOAD_ASYNC_DIRECTION_DATA(getRouteDTO);
-      let test1 = this.get._DIRECTION_WAYPOINTS_;
-      this.dispatch("_UpdateSideBarePanel_", true);
 
-      console.log(test1);
+      // fetch coordinates
+      const coords = this.get._DIRECTION_COORDINATES_;
+
+      const featureCoords = [];
+      for (let coord of coords) {
+        featureCoords.push(coord);
+      }
+      const linestring = new Feature(new LineString(featureCoords));
+      let extent = linestring.getGeometry().getExtent();
+      console.log(extent);
+      // console.log(this.get._SUMMARY_ROUTE_);
+      // console.log(this.get._START_POINT_);
+      // console.log(this.get._END_POINT_);
+
+      const vectorRoute = this.get._VECTOR_ROUTE;
+      const vectorRouteSource = vectorRoute.getSource();
+      vectorRouteSource.addFeature(linestring);
+      // add feature to vectorsource
+
+      this.get.olMap.getView().fit(extent, { duration: 1500 });
+      // add vector source to vector layer and show it on map
+      this.dispatch("_UpdateSideBarePanel_", true);
     },
     setRotation() {
       var view = this.get.olMap.getView();
