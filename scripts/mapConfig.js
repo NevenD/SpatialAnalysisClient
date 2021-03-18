@@ -220,9 +220,7 @@ let vectorCroFields = new Vector({
 let lightStroke = new Style({
   stroke: new Stroke({
     color: [255, 255, 255, 1],
-    width: 3,
-    lineDash: [4, 8],
-    lineDashOffset: 6,
+    width: 5,
   }),
 });
 
@@ -230,7 +228,6 @@ let darkStroke = new Style({
   stroke: new Stroke({
     color: "red",
     width: 3,
-    lineDash: [4, 8],
   }),
 });
 
