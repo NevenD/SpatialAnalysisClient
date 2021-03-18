@@ -62,6 +62,7 @@
 </template>
 <script>
 import _logo from "@/assets/images/navbar.jpg";
+import { transformExtent } from "ol/proj";
 
 export default {
   data() {
@@ -104,7 +105,11 @@ export default {
       }, 500);
     },
     ZoomToRoute() {
-      const routeExtent = this.get._BBOX_ROUTE_;
+      const routeExtent = transformExtent(
+        this.get._BBOX_ROUTE_,
+        "EPSG:4326",
+        "EPSG:3857"
+      );
       this.get.olMap.getView().fit(routeExtent, { duration: 1500 });
     },
   },
