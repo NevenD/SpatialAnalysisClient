@@ -13,8 +13,6 @@
     <MeasureValuesDialog></MeasureValuesDialog>
     <LayersDialog></LayersDialog>
     <VectorLayersListDialog></VectorLayersListDialog>
-    <VectorFeaturesDialog></VectorFeaturesDialog>
-    <AddFeaturesDialog></AddFeaturesDialog>
     <v-flex>
       <v-tooltip right>
         <v-btn absolute id="zoomIn" @click="zoomIn()" dark fab top left small color="red" class="mt-5" slot="activator">
@@ -64,12 +62,6 @@
           <v-icon>apps</v-icon>
         </v-btn>
         <v-tooltip left>
-          <v-btn fab dark small v-show="GetDrawFAB" @click="drawDialog" color="red" slot="activator">
-            <v-icon>edit</v-icon>
-          </v-btn>
-          <span>Draw geometry</span>
-        </v-tooltip>
-        <v-tooltip left>
           <v-btn fab @click="layerDialog" dark small color="red" slot="activator">
             <v-icon>layers</v-icon>
           </v-btn>
@@ -105,8 +97,6 @@ import MeasureDialog from "@/components/SpatialData/MeasureDialog";
 import MeasureValuesDialog from "@/components/SpatialData/MeasureValuesDialog";
 import LayersDialog from "@/components/SpatialData/LayersDialog";
 import VectorLayersListDialog from "@/components/SpatialData/VectorLayersListDialog";
-import VectorFeaturesDialog from "@/components/SpatialData/VectorFeaturesDialog";
-import AddFeaturesDialog from "@/components/SpatialData/AddFeaturesDialog";
 import _startPoint from "@/assets/images/number_1.png";
 import _endPoint from "@/assets/images/number_2.png";
 import {
@@ -134,8 +124,6 @@ export default {
     MeasureValuesDialog,
     LayersDialog,
     VectorLayersListDialog,
-    VectorFeaturesDialog,
-    AddFeaturesDialog,
   },
   data() {
     return {

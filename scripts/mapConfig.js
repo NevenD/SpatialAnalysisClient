@@ -242,6 +242,12 @@ let vectorRoutePoints = new Vector({
   layer_name: "points",
 });
 
+let vectorRouteSelectPoints = new Vector({
+  source: new VectorSource({}),
+  zIndex: 9998,
+  layer_name: "points",
+});
+
 //#endregion
 
 //#region VECTOR LAYER INTERACTION
@@ -452,6 +458,7 @@ let map = new Map({
     vectorMeasure,
     vectorRoute,
     vectorRoutePoints,
+    vectorRouteSelectPoints,
   ],
   controls: [],
 });
@@ -517,4 +524,5 @@ export {
   vectorOverlayCro,
   dragZoom,
   vectorRoutePoints,
+  vectorRouteSelectPoints,
 };

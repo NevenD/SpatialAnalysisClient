@@ -32,6 +32,12 @@
       </v-btn>
      <span>Add second route point</span>
     </v-tooltip>
+      <v-tooltip top>
+      <v-btn fab dark color="red" small slot="activator">
+        <v-icon dark>delete_forever</v-icon>
+      </v-btn>
+     <span>Delete route point</span>
+    </v-tooltip>
   </div>
   <br>
       </v-card>
@@ -102,6 +108,23 @@ export default {
       this.get.olMap.getView().fit(extent, { duration: 1500 });
       // add vector source to vector layer and show it on map
       this.dispatch("_UpdateSideBarePanel_", true);
+    },
+    addFirstRoute() {
+      // pohraniti točku na sloj
+      // izvuci koordinate za start lat i long, transformirati
+      // enablati zavrsnu tocku
+      // disablati pocetnu tocku i pofarbati zeleno
+    },
+    addSecondRoute() {
+      // pohraniti točku na sloj s drugačijim stilom
+      // izvuci koordinate za start lat i long,transformirati
+      // disablati i pofarbati zeleno
+    },
+    deletePointRoutes() {
+      // izbrisati točke iz sloja
+      const vectorSelectPoints = this.get._VECTOR_ROUTE_SELECT_POINTS;
+      vectorSelectPoints.getSource().clear();
+      // enablati početnu točku
     },
   },
 };
