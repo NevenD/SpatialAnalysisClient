@@ -19,13 +19,11 @@ import Vector from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import Snap from "ol/interaction/Snap";
 import GeoJSON from "ol/format/GeoJSON";
-import WKT from "ol/format/WKT";
 import Style from "ol/style/Style";
 import Stroke from "ol/style/Stroke";
 import CircleStyle from "ol/style/Circle";
 import Fill from "ol/style/Fill";
 import { getArea, getLength } from "ol/sphere";
-import Feature from "ol/Feature";
 import BingMaps from "ol/source/BingMaps";
 
 //#region RASTER LAYERS
