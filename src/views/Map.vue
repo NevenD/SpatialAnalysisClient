@@ -98,7 +98,7 @@ import MeasureDialog from "@/components/SpatialData/MeasureDialog";
 import MeasureValuesDialog from "@/components/SpatialData/MeasureValuesDialog";
 import LayersDialog from "@/components/SpatialData/LayersDialog";
 import VectorLayersListDialog from "@/components/SpatialData/VectorLayersListDialog";
-
+import _centerMap from "@/assets/images/center_map.png";
 import {
   homeViewMap,
   attributionControl,
@@ -124,35 +124,35 @@ export default {
   },
   data() {
     return {
+      centermapIcon: _centerMap,
       featurePopupElement: null,
       featurePopupContent: null,
       contextmenuItems: [
         {
           text: "Center map here",
           classname: "bold",
-          icon: "",
-          callback: null,
+          icon:
+            "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/center.png",
+          callback: this.centerMap,
         },
         {
-          text: "Some Actions",
-          icon: null,
+          text: "Route points",
+          icon:
+            "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/view_list.png",
           items: [
             {
-              text: "Center map here",
-              icon: "",
-              callback: this.centerMap,
+              text: "Start point",
+              icon:
+                "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/pin_drop.png",
+              callback: null,
             },
             {
-              text: "Add a Marker",
-              icon: "",
+              text: "End point",
+              icon:
+                "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/pin_drop.png",
               callback: null,
             },
           ],
-        },
-        {
-          text: "Add a Marker",
-          icon: "",
-          callback: null,
         },
         "-", // this is a separator
       ],
@@ -188,9 +188,6 @@ export default {
     },
     vectorList() {
       this.dispatch("_UpdateDialogVectorList_", true);
-    },
-    vectorShpList() {
-      this.dispatch("_UpdateDialogShpVectorList_", true);
     },
     settingsDialog() {
       this.dispatch("_UpdateDialogSettings_", true);
@@ -368,6 +365,8 @@ export default {
   mounted() {
     this.featurePopupElement = document.getElementById("feature-popup");
     this.featurePopupContent = document.getElementById("feature-popup-content");
+
+    console.log(this.centermapIcon);
     const contextmenu = new mapMenu({
       width: 180,
       items: this.contextmenuItems,
@@ -526,6 +525,10 @@ export default {
   top: 665px;
 }
 
+.ol-ctx-menu-container {
+  font-weight: 300 !important;
+  background: #f5f5f5;
+}
 .ol-custom-overviewmap .ol-overviewmap-map {
   border: none;
   width: 200px;

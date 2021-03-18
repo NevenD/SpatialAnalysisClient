@@ -99,6 +99,10 @@ export default {
       const vectorRoutePoint = this.get._VECTOR_ROUTE_POINTS_LAYER;
       const vectorRoutePointSource = vectorRoutePoint.getSource();
       vectorRoutePointSource.clear();
+
+      // remove popup
+      const featurePopupElement = document.getElementById("feature-popup");
+      featurePopupElement.style.display = "none";
       setTimeout(() => {
         this.dispatch("_UpdateSideBarePanel_", false);
       }, 500);

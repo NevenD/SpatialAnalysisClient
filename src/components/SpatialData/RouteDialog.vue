@@ -1,5 +1,5 @@
 <template>
-  <v-dialog hide-overlay v-model="RouteDialog" max-width="450">
+  <v-dialog hide-overlay v-model="RouteDialog" persistent max-width="400">
     <v-card>
            <v-list-tile>
           <v-list-tile-content>
@@ -7,19 +7,19 @@
           </v-list-tile-content>
 
           <v-list-tile-action>
-            <v-btn icon>
-              <v-icon>moving</v-icon>
+            <v-btn icon @click="closeRouterDialog()">
+              <v-icon>close</v-icon>
             </v-btn>
           </v-list-tile-action>
         </v-list-tile>
         <v-card-text>
       <v-layout row>
-          <v-flex xs12 sm12 d-flex>
-            <v-select v-model="profileRoute" prepend-icon="create" single-line :items="routeTypes" hint="Pick route profile"  ></v-select>
+          <v-flex  sm12 d-flex>
+            <v-select v-model="profileRoute" label="Profile routes" prepend-icon="create" single-line :items="routeTypes" hint="Pick route profile"  ></v-select>
           </v-flex>
         </v-layout>
         </v-card-text>
-            <div class="text-xs-center">
+    <div class="text-xs-center">
     <v-tooltip top>
       <v-btn fab :disabled="fetchRouteDisabled" light color="success" small @click="fetchRouteData()" slot="activator">
         <v-icon dark>moving</v-icon>
@@ -46,7 +46,8 @@
     </v-tooltip>
   </div>
   <br>
-      </v-card>
+  <br>
+  </v-card>
   </v-dialog>
 </template>
 <script>
@@ -81,20 +82,14 @@ export default {
         { text: "Foot hiking", value: "foot-hiking" },
         { text: "Wheelchair", value: "wheelchair" },
       ],
-      items: ["Foo", "Bar", "Fizz", "Buzz"],
       rotation: 0,
       get: this.$store.getters,
       dispatch: this.$store.dispatch,
     };
   },
   computed: {
-    RouteDialog: {
-      get: function() {
-        return this.get.dialogRouteSettings;
-      },
-      set: function() {
-        this.dispatch("_UpdateDialogRouteSettings_", false);
-      },
+    RouteDialog() {
+      return this.get.dialogRouteSettings;
     },
   },
   methods: {
@@ -141,6 +136,9 @@ export default {
 
       // add vector source to vector layer and show it on map
       this.dispatch("_UpdateSideBarePanel_", true);
+    },
+    closeRouterDialog() {
+      this.dispatch("_UpdateDialogRouteSettings_", false);
     },
     generateRouteStarEndPoints() {
       const vectorPointsLayer = this.get._VECTOR_ROUTE_POINTS_LAYER;
