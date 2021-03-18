@@ -434,7 +434,7 @@ let mousePositionControl = new MousePosition({
   undefinedHTML: "...outside map...",
 });
 
-let homeViewMap = [16.207458, 44.652329];
+let homeViewMap = fromLonLat([16.207458, 44.652329]);
 //#endregion
 
 //#region MAP WITH VIEW
@@ -460,7 +460,7 @@ let map = new Map({
 let view = new View({
   center: homeViewMap,
   zoom: 8,
-  projection: "EPSG:4326",
+  projection: "EPSG:3857",
 });
 
 //#endregion

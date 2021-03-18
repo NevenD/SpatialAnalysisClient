@@ -90,7 +90,6 @@
 <script>
 import Vector from "ol/layer/Vector";
 import Point from "ol/geom/Point";
-
 import CorineLegend from "@/components/SpatialData/CorineLegend";
 import DialogSettings from "@/components/SpatialData/DialogSettings";
 import Attributions from "@/components/SpatialData/Attributions";
@@ -259,6 +258,7 @@ export default {
 
       const linestring = new Feature(new LineString(featureCoords));
       let extent = linestring.getGeometry().getExtent();
+      linestring.getGeometry().transform("EPSG:4326", "EPSG:3857");
       vectorRouteSource.addFeature(linestring);
       this.generateRouteStarEndPoints();
       this.get.olMap.getView().fit(extent, { duration: 1500 });
@@ -273,6 +273,8 @@ export default {
         geometry: new Point(this.get._START_POINT_),
         name: "Start Point",
       });
+      startFeature.getGeometry().transform("EPSG:4326", "EPSG:3857");
+
       const iconStartPoint = new Style({
         image: new Icon({
           anchor: [0.5, 40],
@@ -287,6 +289,7 @@ export default {
         geometry: new Point(this.get._END_POINT_),
         name: "End Point",
       });
+      endFeature.getGeometry().transform("EPSG:4326", "EPSG:3857");
       const iconEndPoint = new Style({
         image: new Icon({
           anchor: [0.5, 26],
@@ -296,7 +299,6 @@ export default {
         }),
       });
       endFeature.setStyle(iconEndPoint);
-
       vectorPointsLayerSource.addFeature(startFeature);
       vectorPointsLayerSource.addFeature(endFeature);
     },
@@ -425,8 +427,8 @@ export default {
         if (e.dragging) {
           return;
         }
-        var pixel = that.get.olMap.getEventPixel(e.originalEvent);
-        var feature = that.get.olMap.forEachFeatureAtPixel(
+        let pixel = that.get.olMap.getEventPixel(e.originalEvent);
+        let feature = that.get.olMap.forEachFeatureAtPixel(
           pixel,
           function(feature) {
             return feature;
@@ -437,6 +439,7 @@ export default {
             },
           }
         );
+
         if (feature !== highlight) {
           if (highlight) {
             that.get._VECTOR_OVERLAY_CRO.getSource().removeFeature(highlight);
@@ -451,13 +454,27 @@ export default {
           ? "pointer"
           : "";
       });
+
       // Read geojson properties on click
-      // this.get.olMap.on("click", () => {
-      //   setTimeout(() => {
-      //     // open modal with data properties
-      //     that.dispatch("_UpdateDialogFeatures_", true);
-      //   }, 100);
-      // });
+      this.get.olMap.on("click", (e) => {
+        let pixel = that.get.olMap.getEventPixel(e.originalEvent);
+        let feature = that.get.olMap.forEachFeatureAtPixel(
+          pixel,
+          function(feature) {
+            return feature;
+          },
+          {
+            layerFilter: function(layer) {
+              return layer.get("layer_name") === "routes";
+            },
+          }
+        );
+        if (feature) {
+          // add overlay
+          // add properties
+          console.log(feature);
+        }
+      });
     }
 
     this.$nextTick(() => {
