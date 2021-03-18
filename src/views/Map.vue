@@ -86,7 +86,8 @@
 
 <script>
 import Vector from "ol/layer/Vector";
-import Point from "ol/geom/Point";
+import Overlay from "ol/Overlay";
+
 import CorineLegend from "@/components/SpatialData/CorineLegend";
 import DialogSettings from "@/components/SpatialData/DialogSettings";
 import DialogRouteSettings from "@/components/SpatialData/RouteDialog";
@@ -97,18 +98,14 @@ import MeasureDialog from "@/components/SpatialData/MeasureDialog";
 import MeasureValuesDialog from "@/components/SpatialData/MeasureValuesDialog";
 import LayersDialog from "@/components/SpatialData/LayersDialog";
 import VectorLayersListDialog from "@/components/SpatialData/VectorLayersListDialog";
-import _startPoint from "@/assets/images/number_1.png";
-import _endPoint from "@/assets/images/number_2.png";
+
 import {
   homeViewMap,
   attributionControl,
   formatArea,
   formatLength,
 } from "../../scripts/mapConfig";
-import { Icon, Style } from "ol/style";
-import Overlay from "ol/Overlay";
-import Feature from "ol/Feature";
-import { mapActions } from "vuex";
+
 import { MoveDialogs } from "../helpers/vuetifyHelper";
 const movebleDialogs = MoveDialogs();
 movebleDialogs;
@@ -127,8 +124,6 @@ export default {
   },
   data() {
     return {
-      startPoint: _startPoint,
-      endPoint: _endPoint,
       featurePopupElement: null,
       featurePopupContent: null,
       contextmenuItems: [
@@ -173,7 +168,6 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["LOAD_ASYNC_DIRECTION_DATA"]),
     Interactions() {
       // show button for reseting rotation if rotation exists
       if (this.get.view.getRotation() > 0 || this.get.view.getRotation() < 0) {
@@ -247,43 +241,6 @@ export default {
       const minutes = Math.floor(time / 60);
       const seconds = time - minutes * 60;
       return `Duration: ${minutes} min and ${Math.round(seconds, 0)} sec`;
-    },
-    generateRouteStarEndPoints() {
-      const vectorPointsLayer = this.get._VECTOR_ROUTE_POINTS_LAYER;
-      const vectorPointsLayerSource = vectorPointsLayer.getSource();
-      // add feature to vectorsource
-      const startFeature = new Feature({
-        geometry: new Point(this.get._START_POINT_),
-        name: "Start Point",
-      });
-      startFeature.getGeometry().transform("EPSG:4326", "EPSG:3857");
-
-      const iconStartPoint = new Style({
-        image: new Icon({
-          anchor: [0.5, 40],
-          anchorXUnits: "fraction",
-          anchorYUnits: "pixels",
-          src: this.startPoint,
-        }),
-      });
-      startFeature.setStyle(iconStartPoint);
-
-      const endFeature = new Feature({
-        geometry: new Point(this.get._END_POINT_),
-        name: "End Point",
-      });
-      endFeature.getGeometry().transform("EPSG:4326", "EPSG:3857");
-      const iconEndPoint = new Style({
-        image: new Icon({
-          anchor: [0.5, 26],
-          anchorXUnits: "fraction",
-          anchorYUnits: "pixels",
-          src: this.endPoint,
-        }),
-      });
-      endFeature.setStyle(iconEndPoint);
-      vectorPointsLayerSource.addFeature(startFeature);
-      vectorPointsLayerSource.addFeature(endFeature);
     },
     setRotation() {
       var view = this.get.olMap.getView();

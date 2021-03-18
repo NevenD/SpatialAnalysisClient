@@ -182,12 +182,17 @@ let vectorDrawLayer = new Vector({
   style: styleAfterDraw,
 });
 
-let drawInteractionPolygon = new Draw({
-  type: "Polygon",
+let drawInteractionPointStart = new Draw({
+  type: "Point",
   source: vectorDrawLayer.getSource(),
   style: styleDuringDraw,
 });
 
+let drawInteractionPointEnd = new Draw({
+  type: "Point",
+  source: vectorDrawLayer.getSource(),
+  style: styleDuringDraw,
+});
 let snapVectorDraw = new Snap({
   source: vectorDrawLayer.getSource(),
 });
@@ -458,7 +463,7 @@ let map = new Map({
     vectorMeasure,
     vectorRoute,
     vectorRoutePoints,
-    vectorRouteSelectPoints,
+    vectorDrawLayer,
   ],
   controls: [],
 });
@@ -491,8 +496,9 @@ export {
   map,
   view,
   homeViewMap,
+  drawInteractionPointStart,
+  drawInteractionPointEnd,
   vectorDrawLayer,
-  drawInteractionPolygon,
   snapVectorDraw,
   dguDofCro,
   dguCadastral,

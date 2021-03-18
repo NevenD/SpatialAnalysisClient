@@ -15,25 +15,31 @@
         <v-card-text>
       <v-layout row>
           <v-flex xs12 sm12 d-flex>
-            <v-select v-model="profileRoute" item-disabled="customDisabled" prepend-icon="create" single-line :items="routeTypes" hint="Pick route profile" persistent-hint label="Profile type"></v-select>
+            <v-select v-model="profileRoute" prepend-icon="create" single-line :items="routeTypes" hint="Pick route profile"  ></v-select>
           </v-flex>
         </v-layout>
         </v-card-text>
             <div class="text-xs-center">
     <v-tooltip top>
-      <v-btn fab light small  slot="activator">
+      <v-btn fab :disabled="fetchRouteDisabled" light color="success" small @click="fetchRouteData()" slot="activator">
+        <v-icon dark>moving</v-icon>
+      </v-btn>
+     <span>Fetch route</span>
+    </v-tooltip>
+    <v-tooltip top>
+      <v-btn fab :disabled="addStartRouteDisabled" light small @click="addFirstRoute()" slot="activator">
         <v-icon dark>add_location</v-icon>
       </v-btn>
      <span>Add first route point</span>
     </v-tooltip>
     <v-tooltip top>
-      <v-btn fab light small slot="activator">
-        <v-icon dark :disabled="true">pin_drop</v-icon>
+      <v-btn fab light :disabled="addEndRouteDisabled" @click="addSecondRoute()" small slot="activator">
+        <v-icon dark >pin_drop</v-icon>
       </v-btn>
      <span>Add second route point</span>
     </v-tooltip>
       <v-tooltip top>
-      <v-btn fab dark color="red" small slot="activator">
+      <v-btn fab dark color="red" small @click="deletePointRoutes()" slot="activator">
         <v-icon dark>delete_forever</v-icon>
       </v-btn>
      <span>Delete route point</span>
@@ -45,12 +51,25 @@
 </template>
 <script>
 import LineString from "ol/geom/LineString";
+import { Icon, Style } from "ol/style";
 import Feature from "ol/Feature";
-
+import { mapActions } from "vuex";
+import Point from "ol/geom/Point";
+import _startPoint from "@/assets/images/number_1.png";
+import _endPoint from "@/assets/images/number_2.png";
 export default {
   data() {
     return {
-      profileRoute: null,
+      startPoint: _startPoint,
+      endPoint: _endPoint,
+      addStartRouteDisabled: false,
+      addEndRouteDisabled: true,
+      fetchRouteDisabled: true,
+      profileRoute: { text: "Car", value: "driving-car" },
+      startLong: null,
+      startLat: null,
+      endLong: null,
+      endLat: null,
       routeTypes: [
         { text: "Car", value: "driving-car" },
         { text: "Heavy vehicle", value: "driving-hgv" },
@@ -79,13 +98,24 @@ export default {
     },
   },
   methods: {
+    ...mapActions(["LOAD_ASYNC_DIRECTION_DATA"]),
     async fetchRouteData() {
+      this.get.olMap.removeInteraction(this.get._DRAW_INTERACTION_POINT);
+      this.deletePreviousRoute();
+
+      let profileSelected = "";
+      if (this.profileRoute.value === undefined) {
+        profileSelected = this.profileRoute;
+      } else {
+        profileSelected = this.profileRoute.value;
+      }
+
       const getRouteDTO = {
-        Profile: "driving-car",
-        StartLongitude: 15.710697,
-        StartLatitude: 46.183814,
-        EndLongitude: 15.727079,
-        EndLatitude: 46.169287,
+        Profile: profileSelected,
+        StartLongitude: this.startLong, //15.710697,
+        StartLatitude: this.startLat, //46.183814,
+        EndLongitude: this.endLong,
+        EndLatitude: this.endLat,
       };
 
       await this.LOAD_ASYNC_DIRECTION_DATA(getRouteDTO);
@@ -106,25 +136,114 @@ export default {
       vectorRouteSource.addFeature(linestring);
       this.generateRouteStarEndPoints();
       this.get.olMap.getView().fit(extent, { duration: 1500 });
+
+      this.deletePointRoutes();
+
       // add vector source to vector layer and show it on map
       this.dispatch("_UpdateSideBarePanel_", true);
     },
+    generateRouteStarEndPoints() {
+      const vectorPointsLayer = this.get._VECTOR_ROUTE_POINTS_LAYER;
+      const vectorPointsLayerSource = vectorPointsLayer.getSource();
+      // add feature to vectorsource
+      const startFeature = new Feature({
+        geometry: new Point(this.get._START_POINT_),
+        name: "Start Point",
+      });
+      startFeature.getGeometry().transform("EPSG:4326", "EPSG:3857");
+
+      const iconStartPoint = new Style({
+        image: new Icon({
+          anchor: [0.5, 40],
+          anchorXUnits: "fraction",
+          anchorYUnits: "pixels",
+          src: this.startPoint,
+        }),
+      });
+      startFeature.setStyle(iconStartPoint);
+
+      const endFeature = new Feature({
+        geometry: new Point(this.get._END_POINT_),
+        name: "End Point",
+      });
+      endFeature.getGeometry().transform("EPSG:4326", "EPSG:3857");
+      const iconEndPoint = new Style({
+        image: new Icon({
+          anchor: [0.5, 26],
+          anchorXUnits: "fraction",
+          anchorYUnits: "pixels",
+          src: this.endPoint,
+        }),
+      });
+      endFeature.setStyle(iconEndPoint);
+      vectorPointsLayerSource.addFeature(startFeature);
+      vectorPointsLayerSource.addFeature(endFeature);
+    },
     addFirstRoute() {
       // pohraniti točku na sloj
-      // izvuci koordinate za start lat i long, transformirati
-      // enablati zavrsnu tocku
-      // disablati pocetnu tocku i pofarbati zeleno
+      this.get.olMap.addInteraction(this.get._DRAW_INTERACTION_POINT_START);
+      this.get._DRAW_INTERACTION_POINT_START.on("drawend", (e) => {
+        const pointFeature = e.feature;
+        const transformedFeature = pointFeature
+          .clone()
+          .getGeometry()
+          .transform("EPSG:3857", "EPSG:4326")
+          .getCoordinates();
+
+        this.startLong = transformedFeature[0];
+        this.startLat = transformedFeature[1];
+
+        setTimeout(() => {
+          this.addEndRouteDisabled = false;
+          this.addStartRouteDisabled = true;
+          this.get.olMap.removeInteraction(
+            this.get._DRAW_INTERACTION_POINT_START
+          );
+        }, 200);
+      });
     },
     addSecondRoute() {
-      // pohraniti točku na sloj s drugačijim stilom
-      // izvuci koordinate za start lat i long,transformirati
-      // disablati i pofarbati zeleno
+      this.get.olMap.addInteraction(this.get._DRAW_INTERACTION_POINT_END);
+      this.get._DRAW_INTERACTION_POINT_END.on("drawend", (e) => {
+        const pointFeatureEnd = e.feature;
+        const transformedFeatureEnd = pointFeatureEnd
+          .clone()
+          .getGeometry()
+          .transform("EPSG:3857", "EPSG:4326")
+          .getCoordinates();
+
+        this.endLong = transformedFeatureEnd[0];
+        this.endLat = transformedFeatureEnd[1];
+        setTimeout(() => {
+          this.addEndRouteDisabled = true;
+          this.fetchRouteDisabled = false;
+          this.get.olMap.removeInteraction(
+            this.get._DRAW_INTERACTION_POINT_END
+          );
+        }, 50);
+      });
     },
     deletePointRoutes() {
       // izbrisati točke iz sloja
-      const vectorSelectPoints = this.get._VECTOR_ROUTE_SELECT_POINTS;
+      const vectorSelectPoints = this.get._VECTOR_DRAW_LAYER;
       vectorSelectPoints.getSource().clear();
+
+      this.addEndRouteDisabled = true;
+      this.addStartRouteDisabled = false;
+      this.fetchRouteDisabled = true;
+
       // enablati početnu točku
+    },
+    deletePreviousRoute() {
+      this.dispatch("_DELETE_DIRECTION_WAYPOINTS_", []);
+
+      const vectorRoute = this.get._VECTOR_ROUTE_LAYER;
+      const vectorRouteSource = vectorRoute.getSource();
+      vectorRouteSource.clear();
+
+      const vectorRoutePoint = this.get._VECTOR_ROUTE_POINTS_LAYER;
+      const vectorRoutePointSource = vectorRoutePoint.getSource();
+      vectorRoutePointSource.clear();
     },
   },
 };
