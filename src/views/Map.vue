@@ -1,5 +1,9 @@
 <template>
   <v-layout v-on:scroll.passive="onScroll" fill-height @mousemove="Interactions()" id="map">
+    <div id="feature-popup" class="ol-popup" style="display:none">
+      <!-- <a href="#" id="feature-popup-closer" class="ol-popup-closer"></a> -->
+      <div style="font-weight: 300;" id="feature-popup-content"></div>
+   </div>
     <CorineLegend></CorineLegend>
     <DialogSettings></DialogSettings>
     <Attributions></Attributions>
@@ -109,12 +113,13 @@ import {
   formatLength,
 } from "../../scripts/mapConfig";
 import { Icon, Style } from "ol/style";
+import Overlay from "ol/Overlay";
 import Feature from "ol/Feature";
 import LineString from "ol/geom/LineString";
 import { mapActions } from "vuex";
 import { MoveDialogs } from "../helpers/vuetifyHelper";
 const movebleDialogs = MoveDialogs();
-
+movebleDialogs;
 const mapMenu = require("ol-contextmenu");
 export default {
   components: {
@@ -133,6 +138,8 @@ export default {
     return {
       startPoint: _startPoint,
       endPoint: _endPoint,
+      featurePopupElement: null,
+      featurePopupContent: null,
       contextmenuItems: [
         {
           text: "Center map here",
@@ -235,6 +242,19 @@ export default {
         center: map.coordinate,
       });
     },
+    distanceRoute(val) {
+      if (val > 1000) {
+        let kilometers = val / 1000;
+        return `Route distance: ${Math.round(kilometers, 2)} km`;
+      } else {
+        return `Route distance: ${val} m`;
+      }
+    },
+    durationRoute(time) {
+      const minutes = Math.floor(time / 60);
+      const seconds = time - minutes * 60;
+      return `Duration: ${minutes}.${Math.round(seconds, 0)} min`;
+    },
     async fetchRouteData() {
       const getRouteDTO = {
         Profile: "driving-car",
@@ -309,6 +329,32 @@ export default {
         duration: 1200,
       });
       this.dispatch("_UPDATE_ROTATION_", 0);
+    },
+    generateRouteOverlay(e, feature) {
+      this.featurePopupElement.style.display = "inline";
+      const overlayPopup = new Overlay({
+        element: this.featurePopupElement,
+        autoPan: true,
+        autoPanAnimation: {
+          duration: 250,
+        },
+      });
+      if (feature) {
+        //add elements and into content
+        const contentDistance = this.distanceRoute(
+          this.get._SUMMARY_ROUTE_.distance
+        );
+        const contentDuration = this.durationRoute(
+          this.get._SUMMARY_ROUTE_.duration
+        );
+
+        this.featurePopupContent.innerHTML = `<span>${contentDistance}</span><br><span>${contentDuration}</span>`;
+        overlayPopup.setPosition(e.coordinate);
+        this.get.olMap.addOverlay(overlayPopup);
+      } else {
+        this.featurePopupElement.style.display = "none";
+        this.get.olMap.removeOverlay(overlayPopup);
+      }
     },
   },
   computed: {
@@ -399,6 +445,8 @@ export default {
     },
   },
   mounted() {
+    this.featurePopupElement = document.getElementById("feature-popup");
+    this.featurePopupContent = document.getElementById("feature-popup-content");
     const contextmenu = new mapMenu({
       width: 180,
       items: this.contextmenuItems,
@@ -469,11 +517,7 @@ export default {
             },
           }
         );
-        if (feature) {
-          // add overlay
-          // add properties
-          console.log(feature);
-        }
+        this.generateRouteOverlay(e, feature);
       });
     }
 
@@ -498,6 +542,7 @@ export default {
   bottom: 12px;
   left: -50px;
 }
+
 .ol-popup:after,
 .ol-popup:before {
   top: 100%;
