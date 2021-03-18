@@ -1,22 +1,39 @@
 <template>
-  <v-dialog hide-overlay v-model="RouteDialog" max-width="290">
+  <v-dialog hide-overlay v-model="RouteDialog" max-width="450">
     <v-card>
-        <v-img
-          src="https://cdn.vuetifyjs.com/images/cards/desert.jpg"
-          aspect-ratio="2.75"
-        ></v-img>
+           <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title>Route settings</v-list-tile-title>
+          </v-list-tile-content>
 
-        <v-card-title primary-title>
-          <div>
-            <h3 class="headline mb-0">Kangaroo Valley Safari</h3>
-            <div> some text </div>
-          </div>
-        </v-card-title>
-
-        <v-card-actions>
-          <v-btn flat color="orange">Share</v-btn>
-          <v-btn flat color="orange">Explore</v-btn>
-        </v-card-actions>
+          <v-list-tile-action>
+            <v-btn icon>
+              <v-icon>moving</v-icon>
+            </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+        <v-card-text>
+      <v-layout row>
+          <v-flex xs12 sm12 d-flex>
+            <v-select v-model="profileRoute" item-disabled="customDisabled" prepend-icon="create" single-line :items="routeTypes" hint="Pick route profile" persistent-hint label="Profile type"></v-select>
+          </v-flex>
+        </v-layout>
+        </v-card-text>
+            <div class="text-xs-center">
+    <v-tooltip top>
+      <v-btn fab light small  slot="activator">
+        <v-icon dark>add_location</v-icon>
+      </v-btn>
+     <span>Add first route point</span>
+    </v-tooltip>
+    <v-tooltip top>
+      <v-btn fab light small slot="activator">
+        <v-icon dark :disabled="true">pin_drop</v-icon>
+      </v-btn>
+     <span>Add second route point</span>
+    </v-tooltip>
+  </div>
+  <br>
       </v-card>
   </v-dialog>
 </template>
@@ -27,6 +44,19 @@ import Feature from "ol/Feature";
 export default {
   data() {
     return {
+      profileRoute: null,
+      routeTypes: [
+        { text: "Car", value: "driving-car" },
+        { text: "Heavy vehicle", value: "driving-hgv" },
+        { text: "Cycling regular", value: "cycling-regular" },
+        { text: "Cycling road", value: "cycling-road" },
+        { text: "Cycling mountain", value: "cycling-mountain" },
+        { text: "Cycling eletric", value: "cycling-eletric" },
+        { text: "Foot walking", value: "foot-walking" },
+        { text: "Foot hiking", value: "foot-hiking" },
+        { text: "Wheelchair", value: "wheelchair" },
+      ],
+      items: ["Foo", "Bar", "Fizz", "Buzz"],
       rotation: 0,
       get: this.$store.getters,
       dispatch: this.$store.dispatch,

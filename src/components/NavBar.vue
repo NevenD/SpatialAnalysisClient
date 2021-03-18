@@ -36,9 +36,8 @@
           </v-expansion-panel>
       </v-card>
       <br>
-              <div class="text-xs-center">
-
-<v-tooltip top>
+    <div class="text-xs-center">
+    <v-tooltip top>
       <v-btn fab light small  slot="activator">
         <v-icon dark>add</v-icon>
       </v-btn>
