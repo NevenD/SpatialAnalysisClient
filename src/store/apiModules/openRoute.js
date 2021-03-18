@@ -10,6 +10,7 @@ export default {
     _END_POINT: [],
     _SUMMARY_ROUTE: null,
     _BBOX_ROUTE: [],
+    _PROFILE_ROUTE: null,
   },
   getters: {
     _DIRECTION_DATA_: (state) => {
@@ -32,6 +33,9 @@ export default {
     },
     _BBOX_ROUTE_: (state) => {
       return state._BBOX_ROUTE;
+    },
+    _PROFILE_ROUTE_: (state) => {
+      return state._PROFILE_ROUTE;
     },
   },
   mutations: {
@@ -56,6 +60,9 @@ export default {
     SET_ASYNC_BBOX(state, data) {
       state._BBOX_ROUTE = data;
     },
+    SET_ASYNC_PROFILE_ROUTE(state, data) {
+      state._PROFILE_ROUTE = data;
+    },
     DELETE_DIRECTION_WAYPOINTS(state, data) {
       state._DIRECTION_WAYPOINTS = data;
     },
@@ -65,7 +72,6 @@ export default {
       await _openRouteRepository.getDirectionData(payload).then((data) => {
         if (data.data) {
           const routeData = data.data;
-          console.log(routeData);
           const routeCoordinates = routeData.features[0].geometry.coordinates;
           const routeWaypoints =
             routeData.features[0].properties.segments[0].steps;
@@ -73,7 +79,7 @@ export default {
           const summary = routeData.features[0].properties.summary;
           const startPoint = routeData.metadata.query.coordinates[0];
           const endPoint = routeData.metadata.query.coordinates[1];
-
+          const profileRoute = routeData.metadata.query.profile;
           commit("SET_ASYNC_DIRECTION_DATA", routeData);
           commit("SET_ASYNC_DIRECTION_COORDINATES", routeCoordinates);
           commit("SET_ASYNC_DIRECTION_WAYPOINTS", routeWaypoints);
@@ -81,6 +87,7 @@ export default {
           commit("SET_ASYNC_END_POINT", endPoint);
           commit("SET_ASYNC_SUMMARY", summary);
           commit("SET_ASYNC_BBOX", routeData.bbox);
+          commit("SET_ASYNC_PROFILE_ROUTE", profileRoute);
         }
       });
     },

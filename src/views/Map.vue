@@ -6,6 +6,7 @@
    </div>
     <CorineLegend></CorineLegend>
     <DialogSettings></DialogSettings>
+    <DialogRouteSettings></DialogRouteSettings>
     <Attributions></Attributions>
     <DrawDialog></DrawDialog>
     <MeasureDialog></MeasureDialog>
@@ -38,10 +39,10 @@
         <span>Home view</span>
       </v-tooltip>
     <v-tooltip right>
-        <v-btn absolute id="zoomOut" @click="fetchRouteData()"  fab top left small light class="mt-10" slot="activator">
+        <v-btn absolute id="route" @click="routeDialog" fab top left small light class="mt-10" slot="activator">
           <v-icon>timeline</v-icon>
         </v-btn>
-        <span>{{enableDragZoom}}</span>
+        <span>Route settings</span>
       </v-tooltip>
       <v-fab-transition>
         <v-btn v-show="!fabRotation" @click="setRotation()" absolute light fab top left small class="mt-9">
@@ -96,6 +97,8 @@ import Vector from "ol/layer/Vector";
 import Point from "ol/geom/Point";
 import CorineLegend from "@/components/SpatialData/CorineLegend";
 import DialogSettings from "@/components/SpatialData/DialogSettings";
+import DialogRouteSettings from "@/components/SpatialData/RouteDialog";
+
 import Attributions from "@/components/SpatialData/Attributions";
 import DrawDialog from "@/components/SpatialData/DrawDialog";
 import MeasureDialog from "@/components/SpatialData/MeasureDialog";
@@ -115,7 +118,6 @@ import {
 import { Icon, Style } from "ol/style";
 import Overlay from "ol/Overlay";
 import Feature from "ol/Feature";
-import LineString from "ol/geom/LineString";
 import { mapActions } from "vuex";
 import { MoveDialogs } from "../helpers/vuetifyHelper";
 const movebleDialogs = MoveDialogs();
@@ -125,6 +127,7 @@ export default {
   components: {
     CorineLegend,
     DialogSettings,
+    DialogRouteSettings,
     Attributions,
     DrawDialog,
     MeasureDialog,
@@ -179,7 +182,6 @@ export default {
       dispatch: this.$store.dispatch,
       get: this.$store.getters,
       SHAPE_FILES: new Vector(),
-      enableDragZoom: "Route settings",
     };
   },
   methods: {
@@ -220,6 +222,9 @@ export default {
     layerDialog() {
       this.dispatch("_UpdateDialogLayers_", true);
     },
+    routeDialog() {
+      this.dispatch("_UpdateDialogRouteSettings_", true);
+    },
     zoomOut() {
       var view = this.get.olMap.getView();
       var zoom = this.get.view.getZoom();
@@ -253,37 +258,7 @@ export default {
     durationRoute(time) {
       const minutes = Math.floor(time / 60);
       const seconds = time - minutes * 60;
-      return `Duration: ${minutes}.${Math.round(seconds, 0)} min`;
-    },
-    async fetchRouteData() {
-      const getRouteDTO = {
-        Profile: "driving-car",
-        StartLongitude: 15.710697,
-        StartLatitude: 46.183814,
-        EndLongitude: 15.727079,
-        EndLatitude: 46.169287,
-      };
-
-      await this.LOAD_ASYNC_DIRECTION_DATA(getRouteDTO);
-
-      // fetch coordinates
-      const coords = this.get._DIRECTION_COORDINATES_;
-
-      const featureCoords = [];
-      for (let coord of coords) {
-        featureCoords.push(coord);
-      }
-      const vectorRouteLayer = this.get._VECTOR_ROUTE_LAYER;
-      const vectorRouteSource = vectorRouteLayer.getSource();
-
-      const linestring = new Feature(new LineString(featureCoords));
-      let extent = linestring.getGeometry().getExtent();
-      linestring.getGeometry().transform("EPSG:4326", "EPSG:3857");
-      vectorRouteSource.addFeature(linestring);
-      this.generateRouteStarEndPoints();
-      this.get.olMap.getView().fit(extent, { duration: 1500 });
-      // add vector source to vector layer and show it on map
-      this.dispatch("_UpdateSideBarePanel_", true);
+      return `Duration: ${minutes} min and ${Math.round(seconds, 0)} sec`;
     },
     generateRouteStarEndPoints() {
       const vectorPointsLayer = this.get._VECTOR_ROUTE_POINTS_LAYER;
@@ -348,7 +323,8 @@ export default {
           this.get._SUMMARY_ROUTE_.duration
         );
 
-        this.featurePopupContent.innerHTML = `<span>${contentDistance}</span><br><span>${contentDuration}</span>`;
+        const tripProfile = this.get._PROFILE_ROUTE_;
+        this.featurePopupContent.innerHTML = `<span>${contentDistance}</span><br><span>${contentDuration}</span><hr><span>Trip profile: ${tripProfile}</span>`;
         overlayPopup.setPosition(e.coordinate);
         this.get.olMap.addOverlay(overlayPopup);
       } else {
@@ -532,7 +508,7 @@ export default {
 <style>
 .ol-popup {
   position: absolute;
-  min-width: 180px;
+  min-width: 200px;
   background-color: white;
   -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
   filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
