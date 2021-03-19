@@ -27,12 +27,6 @@
         </v-list-tile>
         <v-list-tile>
           <v-list-tile-action>
-            <v-switch @change="MiniMap" color="green"></v-switch>
-          </v-list-tile-action>
-          <v-list-tile-title>Enable MiniMap</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile>
-          <v-list-tile-action>
             <v-switch @change="Attribution" color="green"></v-switch>
           </v-list-tile-action>
           <v-list-tile-title>Show attribution</v-list-tile-title>
@@ -69,7 +63,7 @@ export default {
     return {
       rotation: 0,
       get: this.$store.getters,
-      dispatch: this.$store.dispatch
+      dispatch: this.$store.dispatch,
     };
   },
   computed: {
@@ -79,7 +73,7 @@ export default {
       },
       set: function() {
         this.dispatch("_UpdateDialogSettings_", false);
-      }
+      },
     },
     UpdateRotation: {
       get: function() {
@@ -87,8 +81,8 @@ export default {
       },
       set: function(value) {
         this.dispatch("_UPDATE_ROTATION_", value);
-      }
-    }
+      },
+    },
   },
   methods: {
     ScaleLine(event) {
@@ -120,8 +114,8 @@ export default {
       } else {
         this.get.olMap.removeControl(this.get._MOUSE_POSITION_CONTROL);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style>
@@ -129,4 +123,3 @@ export default {
   width: 150px !important;
 }
 </style>
-
