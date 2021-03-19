@@ -36,7 +36,8 @@
 
   <v-dialog hide-overlay v-model="RouteDialog" persistent max-width="400">
     <v-card>
- 
+      <v-card-title class="header-padding" primary-title></v-card-title>
+    <v-card-text>
            <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>Route settings</v-list-tile-title>
@@ -51,7 +52,7 @@
         <v-card-text>
       <v-layout row>
           <v-flex  sm12 d-flex>
-            <v-select v-model="profileRoute" label="Profile routes" prepend-icon="create" single-line :items="routeTypes" hint="Pick route profile"  ></v-select>
+            <v-select v-model="profileRoute" label="Profile routes" prepend-icon="edit_road" single-line :items="routeTypes" hint="Pick route profile"  ></v-select>
           </v-flex>
         </v-layout>
         </v-card-text>
@@ -81,8 +82,7 @@
      <span>Delete route point</span>
     </v-tooltip>
   </div>
-  <br>
-  <br>
+    </v-card-text>
   </v-card>
   </v-dialog>
   </div>
@@ -436,8 +436,11 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .v-text-field__slot {
   width: 150px !important;
+}
+.header-padding {
+  padding: 7px !important;
 }
 </style>
