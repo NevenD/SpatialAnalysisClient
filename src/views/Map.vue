@@ -8,7 +8,6 @@
     <DialogSettings></DialogSettings>
     <DialogRouteSettings></DialogRouteSettings>
     <Attributions></Attributions>
-    <DrawDialog></DrawDialog>
     <MeasureDialog></MeasureDialog>
     <MeasureValuesDialog></MeasureValuesDialog>
     <LayersDialog></LayersDialog>
@@ -27,7 +26,6 @@
         </v-btn>
         <span>Zoom out</span>
       </v-tooltip>
-
   
 
       <v-tooltip right>
@@ -45,16 +43,6 @@
       <v-fab-transition>
         <v-btn v-show="!fabRotation" @click="setRotation()" absolute light fab top left small class="mt-9">
           <v-icon>screen_rotation</v-icon>
-        </v-btn>
-      </v-fab-transition>
-      <!-- <v-fab-transition>
-        <v-btn @click.prevent="vectorList()" v-show="ShowRouterMap" absolute light fab top left small class="mt-10">
-          <v-icon>list</v-icon>
-        </v-btn>
-      </v-fab-transition> -->
-      <v-fab-transition>
-        <v-btn @click.prevent="vectorShpList()" v-show="ShowVectorShpList" absolute light fab top left small class="mt-11">
-          <v-icon>subject</v-icon>
         </v-btn>
       </v-fab-transition>
       <v-speed-dial class="mb-5" fixed bottom right direction="top" transition="slide-y-reverse-transition">
@@ -87,20 +75,17 @@
 <script>
 import Vector from "ol/layer/Vector";
 import Overlay from "ol/Overlay";
-import Feature from "ol/Feature";
-import Point from "ol/geom/Point";
 
 import CorineLegend from "@/components/SpatialData/CorineLegend";
 import DialogSettings from "@/components/SpatialData/DialogSettings";
 import DialogRouteSettings from "@/components/SpatialData/RouteDialog";
-
+import LineString from "ol/geom/LineString";
+import { Icon, Style } from "ol/style";
 import Attributions from "@/components/SpatialData/Attributions";
-import DrawDialog from "@/components/SpatialData/DrawDialog";
 import MeasureDialog from "@/components/SpatialData/MeasureDialog";
 import MeasureValuesDialog from "@/components/SpatialData/MeasureValuesDialog";
 import LayersDialog from "@/components/SpatialData/LayersDialog";
 import VectorLayersListDialog from "@/components/SpatialData/VectorLayersListDialog";
-import _centerMap from "@/assets/images/center_map.png";
 import {
   homeViewMap,
   attributionControl,
@@ -109,16 +94,15 @@ import {
 } from "../../scripts/mapConfig";
 
 import { MoveDialogs } from "../helpers/vuetifyHelper";
+
 const movebleDialogs = MoveDialogs();
 movebleDialogs;
-const mapMenu = require("ol-contextmenu");
 export default {
   components: {
     CorineLegend,
     DialogSettings,
     DialogRouteSettings,
     Attributions,
-    DrawDialog,
     MeasureDialog,
     MeasureValuesDialog,
     LayersDialog,
@@ -126,61 +110,14 @@ export default {
   },
   data() {
     return {
-      centermapIcon: _centerMap,
       featurePopupElement: null,
       featurePopupContent: null,
-      enableFirstRoutePoint: true,
-      enableSecondRoutePoint: true,
-      firstRoutePoint: null,
-      secondRoutePoint: null,
-      startLong: null,
-      startLat: null,
-      endLong: null,
-      endLat: null,
-      contextmenuItems: [
-        {
-          text: "Center map here",
-          classname: "bold",
-          icon:
-            "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/center.png",
-          callback: this.centerMap,
-        },
-        {
-          text: "Route points",
-          icon:
-            "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/view_list.png",
-          items: [
-            {
-              text: "Start point",
-              icon:
-                "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/pin_drop.png",
-              callback: this.addFirstRoutePoint,
-            },
-            {
-              text: "End point",
-              icon:
-                "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/pin_drop.png",
-              callback: this.addSecondRoutePoint,
-            },
-          ],
-        },
-        {
-          text: "Delete route points",
-          classname: "bold",
-          icon: "",
-          callback: this.deleteRoutePoints,
-        },
-        "-", // this is a separator
-      ],
       toggleMapDragZoomInteraction: 0,
       fabRotation: true,
-      is3d: false,
       homeView: homeViewMap,
       AT: attributionControl,
-      VECTOR_LIST: [],
       dispatch: this.$store.dispatch,
       get: this.$store.getters,
-      SHAPE_FILES: new Vector(),
     };
   },
   methods: {
@@ -202,14 +139,8 @@ export default {
         duration: 750,
       });
     },
-    vectorList() {
-      this.dispatch("_UpdateDialogVectorList_", true);
-    },
     settingsDialog() {
       this.dispatch("_UpdateDialogSettings_", true);
-    },
-    drawDialog() {
-      this.dispatch("_UpdateDialogDraw_", true);
     },
     measureDialog() {
       this.dispatch("_UpdateDialogMeasure_", true);
@@ -236,69 +167,6 @@ export default {
         duration: 1000,
       });
     },
-    transformingFeatureCoordinates(feature) {
-      return feature
-        .clone()
-        .getGeometry()
-        .transform("EPSG:3857", "EPSG:4326")
-        .getCoordinates();
-    },
-    centerMap(map) {
-      this.get.olMap.getView().animate({
-        duration: 700,
-        center: map.coordinate,
-      });
-    },
-    addFirstRoutePoint(obj) {
-      if (this.enableFirstRoutePoint) {
-        const pointFeature = new Feature(new Point(obj.coordinate));
-        // dodati feature na source
-        const vectorSource = this.get._VECTOR_DRAW_LAYER.getSource();
-        vectorSource.addFeature(pointFeature);
-        const transformedFeature = this.transformingFeatureCoordinates(
-          pointFeature
-        );
-        this.startLong = transformedFeature[0];
-        this.startLat = transformedFeature[1];
-
-        this.enableFirstRoutePoint = false;
-
-        // ako je disablana prva i druga ruta znaci da mozemo dohvatiti rutu
-        if (
-          this.enableFirstRoutePoint === false &&
-          this.enableSecondRoutePoint === false
-        ) {
-          // fetch route
-        }
-      }
-    },
-    addSecondRoutePoint(obj) {
-      if (this.enableSecondRoutePoint) {
-        const pointFeature = new Feature(new Point(obj.coordinate));
-        // dodati feature na source
-        const vectorSource = this.get._VECTOR_DRAW_LAYER.getSource();
-        vectorSource.addFeature(pointFeature);
-        const transformedFeature = this.transformingFeatureCoordinates(
-          pointFeature
-        );
-        this.endLong = transformedFeature[0];
-        this.startLong = transformedFeature[1];
-        this.enableSecondRoutePoint = false;
-
-        if (
-          this.enableFirstRoutePoint === false &&
-          this.enableSecondRoutePoint === false
-        ) {
-          // fetch route
-        }
-      }
-    },
-    deleteRoutePoints() {
-      this.enableFirstRoutePoint = true;
-      this.enableSecondRoutePoint = true;
-
-      this.get._VECTOR_DRAW_LAYER.getSource().clear();
-    },
     distanceRoute(val) {
       if (val > 1000) {
         let kilometers = val / 1000;
@@ -311,6 +179,11 @@ export default {
       const minutes = Math.floor(time / 60);
       const seconds = time - minutes * 60;
       return `Duration: ${minutes} min and ${Math.round(seconds, 0)} sec`;
+    },
+    firstLetterUpper(text) {
+      const removeDash = text.replace("-", " ");
+      const firstLetter = removeDash.substr(0, 1);
+      return `${firstLetter.toUpperCase()}${removeDash.substr(1)}`;
     },
     setRotation() {
       var view = this.get.olMap.getView();
@@ -337,8 +210,8 @@ export default {
         const contentDuration = this.durationRoute(
           this.get._SUMMARY_ROUTE_.duration
         );
+        const tripProfile = this.firstLetterUpper(this.get._PROFILE_ROUTE_);
 
-        const tripProfile = this.get._PROFILE_ROUTE_;
         this.featurePopupContent.innerHTML = `<span>${contentDistance}</span><br><span>${contentDuration}</span><hr><span>Trip profile: ${tripProfile}</span>`;
         overlayPopup.setPosition(e.coordinate);
         this.get.olMap.addOverlay(overlayPopup);
@@ -352,9 +225,7 @@ export default {
     ShowRouterMap() {
       return this.get.vectorListFAB;
     },
-    ShowVectorShpList() {
-      return this.get.vectorShpListFAB;
-    },
+
     GetRotation() {
       return this.get._ROTATION;
     },
@@ -438,30 +309,8 @@ export default {
   mounted() {
     this.featurePopupElement = document.getElementById("feature-popup");
     this.featurePopupContent = document.getElementById("feature-popup-content");
-
-    console.log(this.centermapIcon);
-    const contextmenu = new mapMenu({
-      width: 180,
-      items: this.contextmenuItems,
-    });
-    this.get.olMap.addControl(contextmenu);
-
     var that = this;
     var highlight;
-
-    contextmenu.on("open", function(evt) {
-      var feature = that.get.olMap.forEachFeatureAtPixel(evt.pixel, (ft) => ft);
-
-      if (feature && feature.get("type") === "removable") {
-        contextmenu.clear();
-        // removeMarkerItem.data = { marker: feature };
-        // contextmenu.push(removeMarkerItem);
-      } else {
-        contextmenu.clear();
-        contextmenu.extend(that.contextmenuItems);
-        contextmenu.extend(contextmenu.getDefaultItems());
-      }
-    });
 
     if (this.get._MEASURE_OPTIONS_ACTIVE) {
       this.get.olMap.on("pointermove", function(e) {

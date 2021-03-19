@@ -135,21 +135,14 @@ let tileOSMMap = new TileLayer({
 //#region DRAW LAYERS
 
 let styleAfterDraw = new Style({
-  fill: new Fill({
-    color: "#5df184ab",
-  }),
-  stroke: new Stroke({
-    color: "#fff",
-    width: 2,
-  }),
   image: new CircleStyle({
     radius: 7,
     fill: new Fill({
-      color: "#5df184ab",
+      color: "#f5f5f5",
     }),
     stroke: new Stroke({
-      color: "#fbfdff",
-      width: 2,
+      color: "red",
+      width: 1,
     }),
   }),
 });

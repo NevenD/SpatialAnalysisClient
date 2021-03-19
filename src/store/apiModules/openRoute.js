@@ -12,6 +12,7 @@ export default {
     _BBOX_ROUTE: [],
     _PROFILE_ROUTE: null,
     _STATUS_MSG: null,
+    _ROUTE_LOADER: false,
   },
   getters: {
     _DIRECTION_DATA_: (state) => {
@@ -40,6 +41,9 @@ export default {
     },
     _STATUS_MSG_: (state) => {
       return state._STATUS_MSG;
+    },
+    _ROUTE_LOADER_: (state) => {
+      return state._ROUTE_LOADER;
     },
   },
   mutations: {
@@ -73,11 +77,15 @@ export default {
     DELETE_DIRECTION_WAYPOINTS(state, data) {
       state._DIRECTION_WAYPOINTS = data;
     },
+    SET_ROUTE_LOADER(state, data) {
+      state._ROUTE_LOADER = data;
+    },
   },
   actions: {
     async LOAD_ASYNC_DIRECTION_DATA({ commit }, payload) {
       await _openRouteRepository.getDirectionData(payload).then((data) => {
         const statusRoute = { status: "success", msg: "" };
+        commit("SET_ROUTE_LOADER", true);
         if (data.data.error === null) {
           const routeData = data.data;
           const routeCoordinates = routeData.features[0].geometry.coordinates;
@@ -99,14 +107,18 @@ export default {
           commit("SET_ASYNC_STATUS_MSG", statusRoute);
         } else {
           statusRoute.status = "error";
-          statusRoute.msg =
-            "Could not generate route, try defining another start and end point";
+          statusRoute.msg = `Could not generate route, try defining another start and end point. Server error: ${
+            data.data.error
+          }`;
           commit("SET_ASYNC_STATUS_MSG", statusRoute);
         }
       });
     },
     _DELETE_DIRECTION_WAYPOINTS_({ commit }, payload) {
       commit("DELETE_DIRECTION_WAYPOINTS", payload);
+    },
+    _SET_ROUTE_LOADER_({ commit }, payload) {
+      commit("SET_ROUTE_LOADER", payload);
     },
   },
 };

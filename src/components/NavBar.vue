@@ -7,10 +7,10 @@
     <v-navigation-drawer v-model="ShowSideBar" light app>
       <v-layout column align-center>
         <v-flex class="mt-5">
-          <v-avatar size="100">
+          <v-avatar size="120">
             <img :src="logo" />
           </v-avatar>
-          <p class="gray--text subheading mt-1">Spatial Data</p>
+          <p class="gray--text subheading mt-1">Testing spatial data</p>
         </v-flex>
       </v-layout>
       <v-card class="card-overflow">
@@ -60,7 +60,7 @@
   </nav>
 </template>
 <script>
-import _logo from "@/assets/images/navbar.jpg";
+import _logo from "@/assets/images/route.png";
 import { transformExtent } from "ol/proj";
 
 export default {
@@ -102,7 +102,9 @@ export default {
 
       // remove popup
       const featurePopupElement = document.getElementById("feature-popup");
-      featurePopupElement.style.display = "none";
+      if (featurePopupElement !== null) {
+        featurePopupElement.style.display = "none";
+      }
       setTimeout(() => {
         this.dispatch("_UpdateSideBarePanel_", false);
       }, 500);
