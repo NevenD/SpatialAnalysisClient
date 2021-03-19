@@ -11,7 +11,6 @@
     <MeasureDialog></MeasureDialog>
     <MeasureValuesDialog></MeasureValuesDialog>
     <LayersDialog></LayersDialog>
-    <VectorLayersListDialog></VectorLayersListDialog>
     <v-flex>
       <v-tooltip right>
         <v-btn absolute id="zoomIn" @click="zoomIn()" dark fab top left small color="red" class="mt-5" slot="activator">
@@ -85,7 +84,6 @@ import Attributions from "@/components/SpatialData/Attributions";
 import MeasureDialog from "@/components/SpatialData/MeasureDialog";
 import MeasureValuesDialog from "@/components/SpatialData/MeasureValuesDialog";
 import LayersDialog from "@/components/SpatialData/LayersDialog";
-import VectorLayersListDialog from "@/components/SpatialData/VectorLayersListDialog";
 import {
   homeViewMap,
   attributionControl,
@@ -106,7 +104,6 @@ export default {
     MeasureDialog,
     MeasureValuesDialog,
     LayersDialog,
-    VectorLayersListDialog,
   },
   data() {
     return {
