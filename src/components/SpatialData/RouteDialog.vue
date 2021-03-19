@@ -19,15 +19,12 @@
       persistent
       width="300"
     >
-      <v-card
-        color="primary"
-        dark
-      >
+      <v-card color="white">
         <v-card-text>
-          Please stand by
+          Fetching route, please wait...
           <v-progress-linear
             indeterminate
-            color="white"
+            color="black"
             class="mb-0"
           ></v-progress-linear>
         </v-card-text>
