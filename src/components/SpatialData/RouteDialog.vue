@@ -6,7 +6,7 @@
       :right="true"
       :top="true"
       :multi-line="true"
-      :timeout="5500"
+      :timeout="8500"
     >
     {{ StatusMsg }}
         <v-btn fab dark color="red" small @click="showError = false" >
@@ -290,6 +290,8 @@ export default {
     },
     addFirstRoute() {
       // pohraniti točku na sloj
+      this.enableFirstRoutePoint = false;
+
       this.get.olMap.addInteraction(this.get._DRAW_INTERACTION_POINT_START);
       this.get._DRAW_INTERACTION_POINT_START.on("drawend", (e) => {
         const pointFeature = e.feature;
@@ -356,6 +358,8 @@ export default {
     },
     addFirstRoutePoint(obj) {
       if (this.enableFirstRoutePoint) {
+        this.addEndRouteDisabled = false;
+        this.addStartRouteDisabled = true;
         const pointFeature = new Feature(new Point(obj.coordinate));
         // dodati feature na source
         const vectorSource = this.get._VECTOR_DRAW_LAYER.getSource();
