@@ -1,6 +1,20 @@
 <template>
   <v-dialog hide-overlay v-model="RouteDialog" persistent max-width="400">
     <v-card>
+       <v-snackbar
+      v-model="showError"
+      color="#f5f5f5"
+      style="color: black"
+      :right="true"
+      :top="true"
+      :multi-line="true"
+      :timeout="5500"
+    >
+    {{ StatusMsg }}
+        <v-btn fab dark color="red" small @click="showError = false" >
+        <v-icon dark>close</v-icon>
+        </v-btn>
+    </v-snackbar>
            <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title>Route settings</v-list-tile-title>
@@ -61,6 +75,7 @@ import _endPoint from "@/assets/images/number_2.png";
 export default {
   data() {
     return {
+      showError: false,
       startPoint: _startPoint,
       endPoint: _endPoint,
       addStartRouteDisabled: false,
@@ -91,6 +106,11 @@ export default {
     RouteDialog() {
       return this.get.dialogRouteSettings;
     },
+    StatusMsg() {
+      const msg =
+        this.get._STATUS_MSG_ === null ? "" : this.get._STATUS_MSG_.msg;
+      return msg;
+    },
   },
   methods: {
     ...mapActions(["LOAD_ASYNC_DIRECTION_DATA"]),
@@ -114,28 +134,31 @@ export default {
       };
 
       await this.LOAD_ASYNC_DIRECTION_DATA(getRouteDTO);
+      if (this.get._STATUS_MSG_.status === "success") {
+        // fetch coordinates
+        const coords = this.get._DIRECTION_COORDINATES_;
 
-      // fetch coordinates
-      const coords = this.get._DIRECTION_COORDINATES_;
+        const featureCoords = [];
+        for (let coord of coords) {
+          featureCoords.push(coord);
+        }
+        const vectorRouteLayer = this.get._VECTOR_ROUTE_LAYER;
+        const vectorRouteSource = vectorRouteLayer.getSource();
 
-      const featureCoords = [];
-      for (let coord of coords) {
-        featureCoords.push(coord);
+        const linestring = new Feature(new LineString(featureCoords));
+        let extent = linestring.getGeometry().getExtent();
+        linestring.getGeometry().transform("EPSG:4326", "EPSG:3857");
+        vectorRouteSource.addFeature(linestring);
+        this.generateRouteStarEndPoints();
+        this.get.olMap.getView().fit(extent, { duration: 1500 });
+
+        this.deletePointRoutes();
+
+        // add vector source to vector layer and show it on map
+        this.dispatch("_UpdateSideBarePanel_", true);
+      } else {
+        this.showError = true;
       }
-      const vectorRouteLayer = this.get._VECTOR_ROUTE_LAYER;
-      const vectorRouteSource = vectorRouteLayer.getSource();
-
-      const linestring = new Feature(new LineString(featureCoords));
-      let extent = linestring.getGeometry().getExtent();
-      linestring.getGeometry().transform("EPSG:4326", "EPSG:3857");
-      vectorRouteSource.addFeature(linestring);
-      this.generateRouteStarEndPoints();
-      this.get.olMap.getView().fit(extent, { duration: 1500 });
-
-      this.deletePointRoutes();
-
-      // add vector source to vector layer and show it on map
-      this.dispatch("_UpdateSideBarePanel_", true);
     },
     closeRouterDialog() {
       this.dispatch("_UpdateDialogRouteSettings_", false);

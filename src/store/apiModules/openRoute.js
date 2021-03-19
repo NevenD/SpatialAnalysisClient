@@ -11,6 +11,7 @@ export default {
     _SUMMARY_ROUTE: null,
     _BBOX_ROUTE: [],
     _PROFILE_ROUTE: null,
+    _STATUS_MSG: null,
   },
   getters: {
     _DIRECTION_DATA_: (state) => {
@@ -36,6 +37,9 @@ export default {
     },
     _PROFILE_ROUTE_: (state) => {
       return state._PROFILE_ROUTE;
+    },
+    _STATUS_MSG_: (state) => {
+      return state._STATUS_MSG;
     },
   },
   mutations: {
@@ -63,6 +67,9 @@ export default {
     SET_ASYNC_PROFILE_ROUTE(state, data) {
       state._PROFILE_ROUTE = data;
     },
+    SET_ASYNC_STATUS_MSG(state, data) {
+      state._STATUS_MSG = data;
+    },
     DELETE_DIRECTION_WAYPOINTS(state, data) {
       state._DIRECTION_WAYPOINTS = data;
     },
@@ -70,7 +77,8 @@ export default {
   actions: {
     async LOAD_ASYNC_DIRECTION_DATA({ commit }, payload) {
       await _openRouteRepository.getDirectionData(payload).then((data) => {
-        if (data.data) {
+        const statusRoute = { status: "success", msg: "" };
+        if (data.data.error === null) {
           const routeData = data.data;
           const routeCoordinates = routeData.features[0].geometry.coordinates;
           const routeWaypoints =
@@ -88,6 +96,12 @@ export default {
           commit("SET_ASYNC_SUMMARY", summary);
           commit("SET_ASYNC_BBOX", routeData.bbox);
           commit("SET_ASYNC_PROFILE_ROUTE", profileRoute);
+          commit("SET_ASYNC_STATUS_MSG", statusRoute);
+        } else {
+          statusRoute.status = "error";
+          statusRoute.msg =
+            "Could not generate route, try defining another start and end point";
+          commit("SET_ASYNC_STATUS_MSG", statusRoute);
         }
       });
     },
