@@ -1,7 +1,7 @@
 <template>
-<div>   <v-snackbar
-      v-model="showError"
-      color="#f5f5f5"
+<div>   
+  <v-snackbar
+      v-model="showError" color="#f5f5f5"
       style="color: black"
       :right="true"
       :top="true"
@@ -116,25 +116,21 @@ export default {
         {
           text: "Center map here",
           classname: "bold",
-          icon:
-            "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/center.png",
+          icon: "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/center.png",
           callback: this.centerMap,
         },
         {
           text: "Route points",
-          icon:
-            "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/view_list.png",
+          icon: "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/view_list.png",
           items: [
             {
               text: "Start point",
-              icon:
-                "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/pin_drop.png",
+              icon: "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/pin_drop.png",
               callback: this.addFirstRoutePoint,
             },
             {
               text: "End point",
-              icon:
-                "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/pin_drop.png",
+              icon: "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/pin_drop.png",
               callback: this.addSecondRoutePoint,
             },
           ],
@@ -172,8 +168,7 @@ export default {
       return this.get._ROUTE_LOADER_;
     },
     StatusMsg() {
-      const msg =
-        this.get._STATUS_MSG_ === null ? "" : this.get._STATUS_MSG_.msg;
+      const msg = this.get._STATUS_MSG_ === null ? "" : this.get._STATUS_MSG_.msg;
       return msg;
     },
     RouteFetchingMsg() {
@@ -308,9 +303,7 @@ export default {
         setTimeout(() => {
           this.addEndRouteDisabled = false;
           this.addStartRouteDisabled = true;
-          this.get.olMap.removeInteraction(
-            this.get._DRAW_INTERACTION_POINT_START
-          );
+          this.get.olMap.removeInteraction(this.get._DRAW_INTERACTION_POINT_START);
         }, 200);
       });
     },
@@ -329,9 +322,7 @@ export default {
         setTimeout(() => {
           this.addEndRouteDisabled = true;
           this.fetchRouteDisabled = false;
-          this.get.olMap.removeInteraction(
-            this.get._DRAW_INTERACTION_POINT_END
-          );
+          this.get.olMap.removeInteraction(this.get._DRAW_INTERACTION_POINT_END);
         }, 50);
       });
     },
@@ -365,19 +356,14 @@ export default {
         // dodati feature na source
         const vectorSource = this.get._VECTOR_DRAW_LAYER.getSource();
         vectorSource.addFeature(pointFeature);
-        const transformedFeature = this.transformingFeatureCoordinates(
-          pointFeature
-        );
+        const transformedFeature = this.transformingFeatureCoordinates(pointFeature);
         this.startLong = transformedFeature[0];
         this.startLat = transformedFeature[1];
 
         this.enableFirstRoutePoint = false;
 
         // ako je disablana prva i druga ruta znaci da mozemo dohvatiti rutu
-        if (
-          this.enableFirstRoutePoint === false &&
-          this.enableSecondRoutePoint === false
-        ) {
+        if (this.enableFirstRoutePoint === false && this.enableSecondRoutePoint === false) {
           this.fetchRouteData();
         }
       }
@@ -388,17 +374,12 @@ export default {
         // dodati feature na source
         const vectorSource = this.get._VECTOR_DRAW_LAYER.getSource();
         vectorSource.addFeature(pointFeature);
-        const transformedFeature = this.transformingFeatureCoordinates(
-          pointFeature
-        );
+        const transformedFeature = this.transformingFeatureCoordinates(pointFeature);
         this.endLong = transformedFeature[0];
         this.endLat = transformedFeature[1];
         this.enableSecondRoutePoint = false;
 
-        if (
-          this.enableFirstRoutePoint === false &&
-          this.enableSecondRoutePoint === false
-        ) {
+        if (this.enableFirstRoutePoint === false && this.enableSecondRoutePoint === false) {
           this.fetchRouteData();
         }
       }

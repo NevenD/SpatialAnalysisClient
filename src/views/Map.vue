@@ -1,7 +1,6 @@
 <template>
   <v-layout v-on:scroll.passive="onScroll" fill-height @mousemove="Interactions()" id="map">
     <div id="feature-popup" class="ol-popup" style="display:none">
-      <!-- <a href="#" id="feature-popup-closer" class="ol-popup-closer"></a> -->
       <div style="font-weight: 300;" id="feature-popup-content"></div>
    </div>
     <CorineLegend></CorineLegend>
@@ -34,7 +33,7 @@
         <span>Home view</span>
       </v-tooltip>
     <v-tooltip right>
-        <v-btn absolute id="route" @click="routeDialog" fab top left small light class="mt-10" slot="activator">
+             <v-btn absolute id="route" @click="routeDialog" fab top left small light class="mt-10" slot="activator">
           <v-icon>timeline</v-icon>
         </v-btn>
         <span>Route settings</span>
@@ -84,12 +83,7 @@ import Attributions from "@/components/SpatialData/Attributions";
 import MeasureDialog from "@/components/SpatialData/MeasureDialog";
 import MeasureValuesDialog from "@/components/SpatialData/MeasureValuesDialog";
 import LayersDialog from "@/components/SpatialData/LayersDialog";
-import {
-  homeViewMap,
-  attributionControl,
-  formatArea,
-  formatLength,
-} from "../../scripts/mapConfig";
+import { homeViewMap, attributionControl, formatArea, formatLength } from "../../scripts/mapConfig";
 
 import { MoveDialogs } from "../helpers/vuetifyHelper";
 
@@ -201,12 +195,8 @@ export default {
       });
       if (feature) {
         //add elements and into content
-        const contentDistance = this.distanceRoute(
-          this.get._SUMMARY_ROUTE_.distance
-        );
-        const contentDuration = this.durationRoute(
-          this.get._SUMMARY_ROUTE_.duration
-        );
+        const contentDistance = this.distanceRoute(this.get._SUMMARY_ROUTE_.distance);
+        const contentDuration = this.durationRoute(this.get._SUMMARY_ROUTE_.duration);
         const tripProfile = this.firstLetterUpper(this.get._PROFILE_ROUTE_);
 
         this.featurePopupContent.innerHTML = `<span>${contentDistance}</span><br><span>${contentDuration}</span><hr><span>Trip profile: ${tripProfile}</span>`;
@@ -337,9 +327,7 @@ export default {
           highlight = feature;
         }
         // if there is any element (returns true or false) then add pointer
-        that.get.olMap.getTargetElement().style.cursor = feature
-          ? "pointer"
-          : "";
+        that.get.olMap.getTargetElement().style.cursor = feature ? "pointer" : "";
       });
 
       // Read geojson properties on click

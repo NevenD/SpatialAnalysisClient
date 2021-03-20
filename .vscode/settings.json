@@ -1,0 +1,68 @@
+{
+  "extensions.autoUpdate": false,
+  "liveServer.settings.NoBrowser": true,
+  "liveServer.settings.donotVerifyTags": true,
+  "editor.fontFamily": " 'Fira Code' ",
+  "window.zoomLevel": 0,
+  "editor.formatOnPaste": true,
+  "workbench.iconTheme": "material-icon-theme",
+  "editor.cursorBlinking": "phase",
+  "editor.fontLigatures": true,
+  "explorer.openEditors.visible": 0,
+  "editor.fontSize": 13,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  // // "workbench.colorCustomizations": {
+  // //   "editor.selectionHighlightBackground": "#236947",
+  // //   "editor.selectionBackground": "#a322af"
+  // // },
+  // "editor.smoothScrolling": true,
+  // "editor.lineHeight": 18,
+  // "editor.tokenColorCustomizations": {
+  //   "textMateRules": [
+  //     {
+  //       "scope": "comment",
+  //       "settings": {
+  //         "fontStyle": "italic",
+  //         "foreground": "#4e4e4ef8"
+  //       }
+  //     }
+  //   ]
+  // },
+  // "editor.wrappingIndent": "none",
+  // "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+  // "git.enableSmartCommit": true,
+  // "git.autofetch": true,
+  // "editor.formatOnSave": true,
+  // "tslint.autoFixOnSave": true,
+  // // "vetur.format.defaultFormatter.ts": "none",
+  // "vetur.format.defaultFormatter.js": "prettier-eslint",
+  // "git.confirmSync": false,
+  // "editor.maxTokenizationLineLength": 90000,
+  // "editor.largeFileOptimizations": false,
+  // "workbench.startupEditor": "welcomePage",
+  // "vetur.format.defaultFormatter.html": "js-beautify-html",
+  // "vetur.format.defaultFormatterOptions": {
+  //   "js-beautify-html": {
+  //     "wrap_attributes": "auto"
+  //   }
+  // },
+  "html.format.wrapAttributes": "force",
+  "html.format.wrapLineLength": 90,
+  "vetur.format.defaultFormatter.ts": "vscode-typescript",
+  // "diffEditor.ignoreTrimWhitespace": false,
+  // "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // "editor.wordWrapColumn": 1800,
+  "debug.console.wordWrap": false,
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 150,
+  "prettier.printWidth": 150
+  // "[markdown]": {
+  //   "editor.wordWrap": "off",
+  //   "editor.quickSuggestions": false
+  // }
+  // // "vetur.format.defaultFormatter.html": "js-beautify-html",
+  // //   "html.format.wrapAttributes": "auto",
+  // //   "html.format.wrapLineLength": 0
+  // //   // "vetur.format.defaultFormatter.html": "js-beautify-html",
+}

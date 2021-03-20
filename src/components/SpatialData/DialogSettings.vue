@@ -7,8 +7,7 @@
             <v-list-tile-title>Turn on/off map settings</v-list-tile-title>
             <v-list-tile-sub-title>Awesome map settings</v-list-tile-sub-title>
           </v-list-tile-content>
-
-          <v-list-tile-action>
+           <v-list-tile-action>
             <v-btn class="green--text" icon>
               <v-icon>settings</v-icon>
             </v-btn>
