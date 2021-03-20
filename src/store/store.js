@@ -8,6 +8,8 @@ import drawOptions from "./modules/drawOptions";
 import addFeatureOptions from "./modules/addFeatureOptions";
 import dialogOptions from "./modules/dialogOptions";
 import openRoute from "./apiModules/openRoute";
+import route from "./apiModules/route";
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -32,6 +34,7 @@ export default new Vuex.Store({
     drawOptions,
     addFeatureOptions,
     dialogOptions,
-    openRoute
-  }
+    openRoute,
+    route,
+  },
 });
