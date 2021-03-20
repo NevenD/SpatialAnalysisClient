@@ -231,6 +231,10 @@ export default {
 
         this.showError = true;
       }
+
+      // enable right click
+      this.enableFirstRoutePoint = true;
+      this.enableSecondRoutePoint = true;
     },
     closeRouteDialog() {
       this.dispatch("_UpdateDialogRouteSettings_", false);
