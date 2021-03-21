@@ -110,12 +110,10 @@ export default {
       }, 500);
     },
     ZoomToRoute() {
-      const routeExtent = transformExtent(
-        this.get._BBOX_ROUTE_,
-        "EPSG:4326",
-        "EPSG:3857"
-      );
-      this.get.olMap.getView().fit(routeExtent, { duration: 1500 });
+      const routeExtent = transformExtent(this.get._BBOX_ROUTE_, "EPSG:4326", "EPSG:3857");
+      if (!isNaN(routeExtent[0])) {
+        this.get.olMap.getView().fit(routeExtent, { duration: 1500 });
+      }
     },
   },
   filters: {
