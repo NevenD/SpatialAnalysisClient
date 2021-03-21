@@ -89,8 +89,7 @@ export default {
         if (data.data.error === null) {
           const routeData = data.data;
           const routeCoordinates = routeData.features[0].geometry.coordinates;
-          const routeWaypoints =
-            routeData.features[0].properties.segments[0].steps;
+          const routeWaypoints = routeData.features[0].properties.segments[0].steps;
 
           const summary = routeData.features[0].properties.summary;
           const startPoint = routeData.metadata.query.coordinates[0];
@@ -107,9 +106,7 @@ export default {
           commit("SET_ASYNC_STATUS_MSG", statusRoute);
         } else {
           statusRoute.status = "error";
-          statusRoute.msg = `Could not generate route, try defining another start and end point. Server error: ${
-            data.data.error
-          }`;
+          statusRoute.msg = `Could not generate route, try defining another start and end point. Server error: ${data.data.error}`;
           commit("SET_ASYNC_STATUS_MSG", statusRoute);
         }
       });

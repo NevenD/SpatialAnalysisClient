@@ -16,7 +16,7 @@ export default {
     },
   },
   actions: {
-    async LOAD_ASYNC_DIRECTION_DATA({ commit }, payload) {
+    async SAVE_ASYNC_DIRECTION_DATA({ commit }, payload) {
       await _openRouteRepository.saveRouteData(payload).then((data) => {
         const statusRoute = { msg: "" };
         if (data.data) {
