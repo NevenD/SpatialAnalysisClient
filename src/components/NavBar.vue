@@ -1,4 +1,5 @@
 <template>
+<div>
   <nav>
     <v-toolbar app>
       <v-toolbar-title class="font-weight-light"> Spatial Data
@@ -38,7 +39,7 @@
       <br>
     <div class="text-xs-center">
     <v-tooltip top>
-      <v-btn fab light small  slot="activator">
+      <v-btn fab light small @click="SaveRouteDialog()" slot="activator">
         <v-icon dark>add</v-icon>
       </v-btn>
      <span>Save route</span>
@@ -58,12 +59,18 @@
   </div>
     </v-navigation-drawer>
   </nav>
+    <DialogRouteSaveSettings></DialogRouteSaveSettings>
+  </div>
 </template>
 <script>
 import _logo from "@/assets/images/route.png";
 import { transformExtent } from "ol/proj";
+import DialogRouteSaveSettings from "@/components/SpatialData/DialogSaveRoute";
 
 export default {
+  components: {
+    DialogRouteSaveSettings,
+  },
   data() {
     return {
       expandContent: [true],
@@ -108,6 +115,9 @@ export default {
       setTimeout(() => {
         this.dispatch("_UpdateSideBarePanel_", false);
       }, 500);
+    },
+    SaveRouteDialog() {
+      this.dispatch("_UpdateDialogRouteSave", true);
     },
     ZoomToRoute() {
       const routeExtent = transformExtent(this.get._BBOX_ROUTE_, "EPSG:4326", "EPSG:3857");

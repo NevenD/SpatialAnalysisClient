@@ -3,7 +3,6 @@
     <div id="feature-popup" class="ol-popup" style="display:none">
       <div style="font-weight: 300;" id="feature-popup-content"></div>
    </div>
-    <CorineLegend></CorineLegend>
     <DialogSettings></DialogSettings>
     <DialogRouteSettings></DialogRouteSettings>
     <Attributions></Attributions>
@@ -24,9 +23,9 @@
         </v-btn>
         <span>Zoom out</span>
       </v-tooltip>
-  
+   
 
-      <v-tooltip right>
+       <v-tooltip right>
         <v-btn absolute id="home" @click="home()" light fab top left small class="mt-8" slot="activator">
           <v-icon>home</v-icon>
         </v-btn>
@@ -60,7 +59,7 @@
           <span>Measure area/length</span>
         </v-tooltip>
         <v-tooltip left>
-          <v-btn fab dark small @click="settingsDialog" color="red" slot="activator">
+          <v-btn fab dark small @click="settingsDialog()" color="red" slot="activator">
             <v-icon>settings</v-icon>
           </v-btn>
           <span>Map settings</span>
@@ -71,14 +70,10 @@
 </template>
 
 <script>
-import Vector from "ol/layer/Vector";
 import Overlay from "ol/Overlay";
 
-import CorineLegend from "@/components/SpatialData/CorineLegend";
 import DialogSettings from "@/components/SpatialData/DialogSettings";
 import DialogRouteSettings from "@/components/SpatialData/RouteDialog";
-import LineString from "ol/geom/LineString";
-import { Icon, Style } from "ol/style";
 import Attributions from "@/components/SpatialData/Attributions";
 import MeasureDialog from "@/components/SpatialData/MeasureDialog";
 import MeasureValuesDialog from "@/components/SpatialData/MeasureValuesDialog";
@@ -91,7 +86,6 @@ const movebleDialogs = MoveDialogs();
 movebleDialogs;
 export default {
   components: {
-    CorineLegend,
     DialogSettings,
     DialogRouteSettings,
     Attributions,

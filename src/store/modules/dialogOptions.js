@@ -11,6 +11,7 @@ const state = {
   UploadDialog: false,
   DialogVectorList: false,
   DialogShpVectorList: false,
+  DialogRouteSave: false,
 };
 
 const getters = {
@@ -43,6 +44,9 @@ const getters = {
   },
   dialogRouteSettings: (state) => {
     return state.DialogRouteSettings;
+  },
+  dialogRouteSave: (sate) => {
+    return sate.DialogRouteSave;
   },
 };
 
@@ -80,6 +84,9 @@ const mutations = {
   _UpdateDialogVectorList_: (state, payload) => {
     state.DialogVectorList = payload;
   },
+  _UpdateDialogRouteSave: (state, payload) => {
+    state.DialogRouteSave = payload;
+  },
 };
 
 const actions = {
@@ -112,6 +119,9 @@ const actions = {
   },
   _UpdateDialogVectorList_({ commit }, payload) {
     commit("_UpdateDialogVectorList_", payload);
+  },
+  _UpdateDialogRouteSave({ commit }, payload) {
+    commit("_UpdateDialogRouteSave", payload);
   },
 };
 
