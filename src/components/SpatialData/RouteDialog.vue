@@ -217,6 +217,14 @@ export default {
         this.deletePointRoutes();
         this.showLoader = false;
 
+        const geometryLine = linestring
+          .clone()
+          .getGeometry()
+          .transform("EPSG:3857", "EPSG:4326");
+        const geometryCoords = geometryLine.getCoordinates().toString();
+        // save route coordinates to store
+        this.dispatch("_SAVE_ROUTE_COORDINATES_", geometryCoords);
+
         // add vector source to vector layer and show it on map
         this.dispatch("_UpdateSideBarePanel_", true);
         this.dispatch("_SET_ROUTE_LOADER_", false);

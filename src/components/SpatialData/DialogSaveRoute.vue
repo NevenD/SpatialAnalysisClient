@@ -7,16 +7,16 @@
           <v-container grid-list-md>
             <v-layout wrap>
               <v-flex xs12 sm6 md6>
-                <v-text-field label="Route author"></v-text-field>
+                <v-text-field label="Route author" v-model="author"></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md6>
-                <v-textarea label="Route description" hint="description of route (write some interesting stuff..)" rows="1" auto-grow></v-textarea>
+                <v-textarea label="Route description" v-model="description" hint="description of route (write some interesting stuff..)" rows="1" auto-grow></v-textarea>
               </v-flex>
                 <v-flex xs12 sm6 md6>
-                <v-text-field label="Route code"></v-text-field>
+                <v-text-field label="Route code" v-model="code"></v-text-field>
               </v-flex>
                <v-flex xs12 sm6 md6>
-                <v-text-field label="Route name"></v-text-field>
+                <v-text-field label="Route name" v-model="routeName"></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -24,7 +24,7 @@
         <v-card-text>
            <div class="text-xs-right">
       <v-tooltip top>
-      <v-btn fab dark small color="green" slot="activator">
+      <v-btn fab dark small color="green" @click="SaveRoute()" slot="activator">
         <v-icon dark>add</v-icon>
       </v-btn>
      <span>Save route</span>
@@ -46,6 +46,10 @@
 export default {
   data() {
     return {
+      author: null,
+      code: null,
+      routeName: null,
+      description: null,
       get: this.$store.getters,
       dispatch: this.$store.dispatch,
     };
@@ -58,6 +62,29 @@ export default {
   methods: {
     CloseDialog() {
       this.dispatch("_UpdateDialogRouteSave", false);
+      this.ResetSaveRouteValues();
+    },
+    SaveRoute() {
+      // dohvati sve propertie
+      const routeCreationDTO = {
+        CreatedBy: this.author,
+        Coordinates: this.get._SAVE_ROUTE_COORDINATES_,
+        Code: this.code,
+        RouteName: this.routeName,
+        Description: this.description,
+        TripDuration: this.get._SUMMARY_ROUTE_.duration,
+        Length: this.get._SUMMARY_ROUTE_.distance,
+      };
+
+      console.log(routeCreationDTO);
+
+      this.ResetSaveRouteValues();
+    },
+    ResetSaveRouteValues() {
+      this.author = null;
+      this.routeName = null;
+      this.description = null;
+      this.code = null;
     },
   },
 };
