@@ -41,8 +41,8 @@ export default {
       await _openRouteRepository.saveRouteData(payload).then((data) => {
         const statusRoute = { msg: "" };
         if (data.data) {
-          const routeData = data.data;
-
+          const routeSaveData = data.data;
+          const routeData = `Route name ${routeSaveData.name} is saved for ${routeSaveData.createdBy}`;
           commit("SET_ASYNC_POST_RETURN_MSG", routeData);
         } else {
           statusRoute.msg = `Error: Could not save data`;
