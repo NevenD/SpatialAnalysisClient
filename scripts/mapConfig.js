@@ -50,9 +50,7 @@ let bingMap = new TileLayer({
 
 let mapboxMap = new TileLayer({
   source: new XYZ({
-    url:
-      "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=" +
-      process.env.VUE_APP_MAPBOX,
+    url: "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=" + process.env.VUE_APP_MAPBOX,
   }),
 });
 
@@ -61,17 +59,13 @@ let mapboxMap = new TileLayer({
 // in free plan we can use Weather maps 1.0
 let tempMap = new TileLayer({
   source: new XYZ({
-    url:
-      "https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=" +
-      process.env.VUE_APP_WEATHER,
+    url: "https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=" + process.env.VUE_APP_WEATHER,
   }),
 });
 
 let dguCadastral = new TileLayer({
   source: new TileWMS({
-    url:
-      "https://oss.uredjenazemlja.hr/OssWebServices/inspireService/wms?token=" +
-      process.env.VUE_APP_CADASTRE_RH,
+    url: "https://oss.uredjenazemlja.hr/OssWebServices/inspireService/wms?token=" + process.env.VUE_APP_CADASTRE_RH,
     params: {
       LAYERS: "CP.CadastralZoning,CP.CadastralParcel",
       FORMAT: "image/png",
@@ -243,6 +237,12 @@ let vectorRouteSelectPoints = new Vector({
   layer_name: "points",
 });
 
+let vectorIsochronePolygon = new Vector({
+  source: new VectorSource({}),
+  zIndex: 9998,
+  layer_name: "isochrones",
+});
+
 //#endregion
 
 //#region VECTOR LAYER INTERACTION
@@ -384,8 +384,7 @@ let formatArea = function(polygon) {
   let output;
   let supValue = "2";
   if (area > 50000) {
-    output =
-      Math.round((area / 1000000) * 100) / 100 + " " + "km" + supValue.sup();
+    output = Math.round((area / 1000000) * 100) / 100 + " " + "km" + supValue.sup();
   } else {
     output = Math.round(area * 100) / 100 + " " + "m" + supValue.sup();
   }
@@ -447,14 +446,7 @@ let map = new Map({
       duration: 750,
     }),
   ]),
-  layers: [
-    dguDofCro,
-    vectorShapes,
-    vectorMeasure,
-    vectorRoute,
-    vectorRoutePoints,
-    vectorDrawLayer,
-  ],
+  layers: [dguDofCro, vectorShapes, vectorMeasure, vectorRoute, vectorRoutePoints, vectorDrawLayer],
   controls: [],
 });
 let view = new View({
@@ -521,4 +513,5 @@ export {
   dragZoom,
   vectorRoutePoints,
   vectorRouteSelectPoints,
+  vectorIsochronePolygon,
 };
