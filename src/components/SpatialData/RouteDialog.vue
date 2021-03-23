@@ -47,6 +47,16 @@
           </v-list-tile-action>
         </v-list-tile>
         <v-card-text>
+          <v-layout row>
+                <v-slider
+            v-model="sliderValue"
+            label="Isochrone radius"
+            thumb-label="always"
+            color="success"
+            max="2000"
+            min="100"
+          ></v-slider>
+          </v-layout>
       <v-layout row>
           <v-flex  sm12 d-flex>
             <v-select v-model="profileRoute" label="Profile routes" prepend-icon="edit_road" single-line :items="routeTypes" hint="Pick route profile"  ></v-select>
@@ -54,6 +64,12 @@
         </v-layout>
         </v-card-text>
     <div class="text-xs-center">
+          <v-tooltip top>
+      <v-btn fab light color="success" small  slot="activator">
+        <v-icon dark>trip_origin</v-icon>
+      </v-btn>
+     <span>Generate isochrone polygon</span>
+    </v-tooltip>
     <v-tooltip top>
       <v-btn fab :disabled="fetchRouteDisabled" light color="success" small @click="fetchRouteData()" slot="activator">
         <v-icon dark>moving</v-icon>
@@ -76,7 +92,7 @@
       <v-btn fab dark color="red" small @click="deletePointRoutes()" slot="activator">
         <v-icon dark>delete_forever</v-icon>
       </v-btn>
-     <span>Delete route point</span>
+     <span>Delete route point & isochrone polygon</span>
     </v-tooltip>
   </div>
     </v-card-text>
@@ -99,6 +115,7 @@ const mapMenu = require("ol-contextmenu");
 export default {
   data() {
     return {
+      sliderValue: 200,
       showError: false,
       showLoader: false,
       startPoint: _startPoint,
