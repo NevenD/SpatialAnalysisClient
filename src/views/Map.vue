@@ -427,7 +427,7 @@ export default {
 }
 
 .ol-ctx-menu-container {
-  font-weight: 300 !important;
+  font-weight: 320 !important;
   background: #f5f5f5;
 }
 .ol-custom-overviewmap .ol-overviewmap-map {

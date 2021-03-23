@@ -34,16 +34,16 @@
   <v-dialog hide-overlay v-model="RouteDialog" persistent max-width="400">
     <v-card>
       <v-card-title class="header-padding" primary-title></v-card-title>
-    <v-card-text>
+      <v-spacer></v-spacer>
+        <v-btn icon style="float: right;" @click="closeRouteDialog()">
+              <v-icon>close</v-icon>
+        </v-btn>
+        <v-card-text>
            <v-list-tile>
           <v-list-tile-content>
-            <v-list-tile-title>Route settings</v-list-tile-title>
+            <v-list-tile-title>Route & isochrone settings</v-list-tile-title>
           </v-list-tile-content>
-
           <v-list-tile-action>
-            <v-btn icon @click="closeRouteDialog()">
-              <v-icon>close</v-icon>
-            </v-btn>
           </v-list-tile-action>
         </v-list-tile>
         <v-card-text>
@@ -133,13 +133,30 @@ export default {
               icon: "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/pin_drop.png",
               callback: this.addSecondRoutePoint,
             },
+            {
+              text: "Delete route points",
+              classname: "bold",
+              icon: "",
+              callback: this.deleteContextPointRoutes,
+            },
           ],
         },
         {
-          text: "Delete route points",
-          classname: "bold",
-          icon: "",
-          callback: this.deleteContextPointRoutes,
+          text: "Isochrones",
+          icon: "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/view_list.png",
+          items: [
+            {
+              text: "Generate isochrone",
+              icon: "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/pin_drop.png",
+              callback: this.addFirstRoutePoint,
+            },
+            {
+              text: "Delete polygon",
+              classname: "bold",
+              icon: "",
+              callback: this.deleteContextPointRoutes,
+            },
+          ],
         },
         "-", // this is a separator
       ],
