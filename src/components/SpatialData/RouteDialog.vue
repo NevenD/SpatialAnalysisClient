@@ -65,7 +65,7 @@
         </v-card-text>
     <div class="text-xs-center">
           <v-tooltip top>
-      <v-btn fab light color="success" small  slot="activator">
+      <v-btn fab light color="success" small @click="generatePointForIsochronePolygonDialog()" slot="activator">
         <v-icon dark>trip_origin</v-icon>
       </v-btn>
      <span>Generate isochrone polygon</span>
@@ -208,6 +208,15 @@ export default {
     RouteFetchingMsg() {
       return "Fetching route...";
     },
+    ProfileSelected() {
+      let profileSelected = "";
+      if (this.profileRoute.value === undefined) {
+        profileSelected = this.profileRoute;
+      } else {
+        profileSelected = this.profileRoute.value;
+      }
+      return profileSelected;
+    },
   },
   methods: {
     ...mapActions(["LOAD_ASYNC_DIRECTION_DATA", "LOAD_ASYNC_ISOCHRONE_DATA"]),
@@ -215,15 +224,8 @@ export default {
       this.get.olMap.removeInteraction(this.get._DRAW_INTERACTION_POINT);
       this.deletePreviousRoute();
 
-      let profileSelected = "";
-      if (this.profileRoute.value === undefined) {
-        profileSelected = this.profileRoute;
-      } else {
-        profileSelected = this.profileRoute.value;
-      }
-
       const getRouteDTO = {
-        Profile: profileSelected,
+        Profile: this.ProfileSelected,
         StartLongitude: this.startLong, //15.710697,
         StartLatitude: this.startLat, //46.183814,
         EndLongitude: this.endLong,
@@ -271,6 +273,25 @@ export default {
     closeRouteDialog() {
       this.dispatch("_UpdateDialogRouteSettings_", false);
     },
+    createFeatureForIsochrone(coordinate) {
+      const isochromeFeature = new Feature({
+        geometry: new Point(coordinate),
+        name: "End Point",
+      });
+
+      const iconIsochromeFeature = new Style({
+        image: new Icon({
+          anchor: [0.5, 40],
+          anchorXUnits: "fraction",
+          anchorYUnits: "pixels",
+          src: this.startPoint,
+        }),
+      });
+      isochromeFeature.setStyle(iconIsochromeFeature);
+      this.get._VECTOR_ISOCHRONE_POLYGON.getSource().addFeature(isochromeFeature);
+
+      return isochromeFeature;
+    },
     generateRouteStarEndPoints() {
       const vectorPointsLayer = this.get._VECTOR_ROUTE_POINTS_LAYER;
       const vectorPointsLayerSource = vectorPointsLayer.getSource();
@@ -315,27 +336,32 @@ export default {
       });
     },
     async generatePointForIsochronePolygon(obj) {
-      const transformedFeature = this.transformingFeatureCoordinates(new Feature(new Point(obj.coordinate)));
-
-      let profileSelected = "";
-      if (this.profileRoute.value === undefined) {
-        profileSelected = this.profileRoute;
-      } else {
-        profileSelected = this.profileRoute.value;
-      }
+      const transformedFeature = this.transformingFeatureCoordinates(this.createFeatureForIsochrone(obj.coordinate));
 
       const fetchIsochroneDTO = {
         range: this.rangeIsochrone,
         pointLongitude: transformedFeature[0], //15.710697,
         pointLatitude: transformedFeature[1], //46.183814,
-        isochroneProfile: profileSelected,
+        isochroneProfile: this.ProfileSelected,
       };
 
-      console.log(fetchIsochroneDTO);
       await this.LOAD_ASYNC_ISOCHRONE_DATA(fetchIsochroneDTO);
 
       this.dispatch("_SET_ROUTE_LOADER_", false);
       // send tranfo
+    },
+    async generatePointForIsochronePolygonDialog() {
+      this.get.olMap.on("singleclick", (evt) => {
+        const transformedFeature = this.transformingFeatureCoordinates(this.createFeatureForIsochrone(evt.coordinate));
+
+        const fetchIsochroneDTO = {
+          range: this.rangeIsochrone,
+          pointLongitude: transformedFeature[0], //15.710697,
+          pointLatitude: transformedFeature[1], //46.183814,
+          isochroneProfile: this.ProfileSelected,
+        };
+        console.log(fetchIsochroneDTO);
+      });
     },
     deleteIsochronePolygon() {
       this.get._VECTOR_ISOCHRONE_POLYGON.getSource().clear();
@@ -401,7 +427,7 @@ export default {
       // izbrisati točke iz sloja
       const vectorSelectPoints = this.get._VECTOR_DRAW_LAYER;
       vectorSelectPoints.getSource().clear();
-
+      this.deleteIsochronePolygon();
       this.addEndRouteDisabled = true;
       this.addStartRouteDisabled = false;
       this.fetchRouteDisabled = true;
@@ -455,7 +481,6 @@ export default {
         }
       }
     },
-
     deleteContextPointRoutes() {
       this.enableFirstRoutePoint = true;
       this.enableSecondRoutePoint = true;
