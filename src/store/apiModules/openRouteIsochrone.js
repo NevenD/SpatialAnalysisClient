@@ -31,18 +31,19 @@ export default {
   },
   actions: {
     async LOAD_ASYNC_ISOCHRONE_DATA({ commit }, payload) {
+      console.log(payload);
       await _openRouteRepository.getIsochronePolygon(payload).then((data) => {
+        console.log(data);
         const statusRoute = { status: "success", msg: "" };
         commit("SET_ROUTE_LOADER", true);
         if (data.data.error === null) {
           const routeData = data.data;
-          const routeCoordinates = routeData.features[0].geometry.coordinates;
+          const routeCoordinates = routeData.isochroneFeatures[0].geometry.coordinates;
 
-          commit("SET_ASYNC_DIRECTION_DATA", routeData);
           commit("SET_ASYNC_ISOCHRONE_COORDINATES", routeCoordinates);
-          commit("SET_ASYNC_DIRECTION_WAYPOINTS", routeWaypoints);
-
           commit("SET_ASYNC_STATUS_ISOCHRONE_MSG", statusRoute);
+
+          commit("SET_ROUTE_LOADER", false);
         } else {
           statusRoute.status = "error";
           statusRoute.msg = `Could not isochrone polygon. Please, select another point.Server error: ${data.data.error}`;

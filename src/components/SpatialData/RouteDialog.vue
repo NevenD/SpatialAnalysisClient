@@ -21,7 +21,7 @@
     >
       <v-card color="white">
         <v-card-text>
-          Fetching route, please wait...
+          Fetching data, please wait...
           <v-progress-linear
             indeterminate
             color="black"
@@ -49,7 +49,7 @@
         <v-card-text>
           <v-layout row>
                 <v-slider
-            v-model="sliderValue"
+            v-model="rangeIsochrone"
             label="Isochrone radius"
             thumb-label="always"
             color="success"
@@ -115,7 +115,7 @@ const mapMenu = require("ol-contextmenu");
 export default {
   data() {
     return {
-      sliderValue: 200,
+      rangeIsochrone: 200,
       showError: false,
       showLoader: false,
       startPoint: _startPoint,
@@ -165,13 +165,13 @@ export default {
             {
               text: "Generate isochrone",
               icon: "https://cdn.jsdelivr.net/gh/jonataswalker/ol-contextmenu@604befc46d737d814505b5d90fc171932f747043/examples/img/pin_drop.png",
-              callback: this.addFirstRoutePoint,
+              callback: this.generatePointForIsochronePolygon,
             },
             {
               text: "Delete polygon",
               classname: "bold",
               icon: "",
-              callback: this.deleteContextPointRoutes,
+              callback: this.deleteIsochronePolygon,
             },
           ],
         },
@@ -210,7 +210,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["LOAD_ASYNC_DIRECTION_DATA"]),
+    ...mapActions(["LOAD_ASYNC_DIRECTION_DATA", "LOAD_ASYNC_ISOCHRONE_DATA"]),
     async fetchRouteData() {
       this.get.olMap.removeInteraction(this.get._DRAW_INTERACTION_POINT);
       this.deletePreviousRoute();
@@ -232,12 +232,7 @@ export default {
       this.showLoader = true;
       await this.LOAD_ASYNC_DIRECTION_DATA(getRouteDTO);
       if (this.get._STATUS_MSG_.status === "success") {
-        const coords = this.get._DIRECTION_COORDINATES_;
-
-        const featureCoords = [];
-        for (let coord of coords) {
-          featureCoords.push(coord);
-        }
+        const featureCoords = this.generateFeatureCoordinates(this.get._DIRECTION_COORDINATES_);
         const vectorRouteLayer = this.get._VECTOR_ROUTE_LAYER;
         const vectorRouteSource = vectorRouteLayer.getSource();
 
@@ -319,12 +314,46 @@ export default {
         center: map.coordinate,
       });
     },
+    async generatePointForIsochronePolygon(obj) {
+      const transformedFeature = this.transformingFeatureCoordinates(new Feature(new Point(obj.coordinate)));
+
+      let profileSelected = "";
+      if (this.profileRoute.value === undefined) {
+        profileSelected = this.profileRoute;
+      } else {
+        profileSelected = this.profileRoute.value;
+      }
+
+      const fetchIsochroneDTO = {
+        range: this.rangeIsochrone,
+        pointLongitude: transformedFeature[0], //15.710697,
+        pointLatitude: transformedFeature[1], //46.183814,
+        isochroneProfile: profileSelected,
+      };
+
+      console.log(fetchIsochroneDTO);
+      await this.LOAD_ASYNC_ISOCHRONE_DATA(fetchIsochroneDTO);
+
+      this.dispatch("_SET_ROUTE_LOADER_", false);
+      // send tranfo
+    },
+    deleteIsochronePolygon() {
+      this.get._VECTOR_ISOCHRONE_POLYGON.getSource().clear();
+    },
     transformingFeatureCoordinates(feature) {
       return feature
         .clone()
         .getGeometry()
         .transform("EPSG:3857", "EPSG:4326")
         .getCoordinates();
+    },
+    generateFeatureCoordinates(coords) {
+      const featureCoords = [];
+      for (let coord of coords) {
+        featureCoords.push(coord);
+      }
+
+      return featureCoords;
     },
     addFirstRoute() {
       // pohraniti točku na sloj

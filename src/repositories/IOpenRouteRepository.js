@@ -10,7 +10,7 @@ export default {
   },
 
   async getIsochronePolygon(fetchIsochroneDTO) {
-    const postReturn = _repository.post(`${route}/GetIsochrones/`, fetchIsochroneDTO).catch((error) => console.log(error));
+    const postReturn = _repository.post(`${route}/GetIsochrone/`, fetchIsochroneDTO).catch((error) => console.log(error));
     return postReturn;
   },
 };
