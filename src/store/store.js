@@ -7,7 +7,8 @@ import appOptions from "./modules/appOptions";
 import drawOptions from "./modules/drawOptions";
 import addFeatureOptions from "./modules/addFeatureOptions";
 import dialogOptions from "./modules/dialogOptions";
-import openRoute from "./apiModules/openRoute";
+import openRouteDirection from "./apiModules/openRouteDirection";
+import openRouteIsochrone from "./apiModules/openRouteIsochrone";
 import route from "./apiModules/route";
 
 Vue.use(Vuex);
@@ -34,7 +35,8 @@ export default new Vuex.Store({
     drawOptions,
     addFeatureOptions,
     dialogOptions,
-    openRoute,
+    openRouteDirection,
+    openRouteIsochrone,
     route,
   },
 });

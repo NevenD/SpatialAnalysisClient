@@ -90,11 +90,10 @@ export default {
           const routeData = data.data;
           const routeCoordinates = routeData.features[0].geometry.coordinates;
           const routeWaypoints = routeData.features[0].properties.segments[0].steps;
-
           const summary = routeData.features[0].properties.summary;
-          const startPoint = routeData.metadata.query.coordinates[0];
-          const endPoint = routeData.metadata.query.coordinates[1];
-          const profileRoute = routeData.metadata.query.profile;
+          const startPoint = routeData.meta.query.coordinates[0];
+          const endPoint = routeData.meta.query.coordinates[1];
+          const profileRoute = routeData.meta.query.profile;
           commit("SET_ASYNC_DIRECTION_DATA", routeData);
           commit("SET_ASYNC_DIRECTION_COORDINATES", routeCoordinates);
           commit("SET_ASYNC_DIRECTION_WAYPOINTS", routeWaypoints);

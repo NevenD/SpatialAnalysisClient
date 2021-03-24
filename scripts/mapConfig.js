@@ -446,7 +446,7 @@ let map = new Map({
       duration: 750,
     }),
   ]),
-  layers: [dguDofCro, vectorShapes, vectorMeasure, vectorRoute, vectorRoutePoints, vectorDrawLayer],
+  layers: [dguDofCro, vectorShapes, vectorMeasure, vectorRoute, vectorRoutePoints, vectorDrawLayer, vectorIsochronePolygon],
   controls: [],
 });
 let view = new View({
