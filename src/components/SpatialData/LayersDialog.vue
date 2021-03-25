@@ -8,6 +8,24 @@
           <v-expansion-panel light popout>
             <v-expansion-panel-content>
               <v-icon slot="actions" color="success">$vuetify.icons.expand</v-icon>
+              <div slot="header">Vector Layers</div>
+              <v-card>
+                <v-card-text class="grey lighten-3">
+                  <v-layout row>
+                    <v-flex md6>
+                      <v-switch v-model="vectorSwitch" color="success"  @change="onChangeVector" label="Routes"></v-switch>
+                    </v-flex>
+                    <v-flex md6>
+                      <v-slider :inverse-label="true" :disabled="slider.vector" color="green" append-icon="opacity" v-model="VectorOpacity" thumb-label></v-slider>
+                    </v-flex>
+                  </v-layout>
+                </v-card-text>
+              </v-card>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel light popout>
+            <v-expansion-panel-content>
+              <v-icon slot="actions" color="success">$vuetify.icons.expand</v-icon>
               <div slot="header">Croatia Base Maps</div>
               <v-card>
                 <v-card-text class="grey lighten-3">
@@ -117,8 +135,10 @@ export default {
         geoTIFFLayer: false,
         shapeFileLayer: false,
         dguDOFSwitch: true,
+        vectorSwitch: true,
         vectorLandFills: true,
         DOFOpacity: 100,
+        VectorOpacity: 100,
         CadastreOpacity: 100,
         DOF2016Opacity: 100,
         TKOpacity: 100,
@@ -143,6 +163,7 @@ export default {
           osm: true,
           mapbox: false,
           bing: true,
+          vector: false,
         },
         urlCardimg: "",
         dispatch: this.$store.dispatch,
@@ -151,38 +172,6 @@ export default {
     }
   },
   methods: {
-    onchangeVectorFields(event) {
-      if (event) {
-        this.slider.vector = false;
-
-        this.get.olMap.addLayer(this.get._GEOJSON_CRO_FIELDS);
-        var that = this;
-        setTimeout(() => {
-          // show vector layer list fab
-          this.dispatch("_UpdateVectorListFAB_", true);
-          // source.forEachFeature
-
-          this.dispatch("_UpdateVectorListFAB_", true);
-
-          this.dispatch("_UpdateDrawVectorFAB_", true);
-
-          var source = that.get._GEOJSON_CRO_FIELDS.getSource();
-          // update vector value features to vuex store
-          that.dispatch("_UPDATE_VECTOR_LIST", source.getFeatures());
-        }, 500);
-      } else {
-        // show vector layer list fab
-        this.dispatch("_UpdateVectorListFAB_", false);
-        this.dispatch("_UpdateDrawVectorFAB_", false);
-
-        // delete vector value features to vuex store
-        this.dispatch("_UPDATE_VECTOR_LIST", null);
-        this.slider.vector = true;
-        this.VECTOR_LIST = null;
-        this.VectorOpacity = 100;
-        this.get.olMap.removeLayer(this.get._GEOJSON_CRO_FIELDS);
-      }
-    },
     onChangeDof(event) {
       if (event == true) {
         this.slider.dof = false;
@@ -228,6 +217,16 @@ export default {
         }
 
         this.DOF2016Opacity = 100;
+        this.get.olMap.removeLayer(this.get._DGU_DOF_2016);
+      }
+    },
+    onChangeVector(event) {
+      if (event) {
+        this.slider.vector = false;
+        // this.get.olMap.addLayer(this.get._DGU_DOF_2016);
+      } else {
+        this.slider.vector = true;
+        this.VectorOpacity = 100;
         this.get.olMap.removeLayer(this.get._DGU_DOF_2016);
       }
     },
@@ -383,7 +382,7 @@ export default {
       this.get._DGU_CADASTRAL.setOpacity(this.CadastreOpacity / 100);
     },
     VectorOpacity() {
-      this.get._GEOJSON_CRO_FIELDS.setOpacity(this.VectorOpacity / 100);
+      // this.get._GEOJSON_CRO_FIELDS.setOpacity(this.VectorOpacity / 100);
     },
     MapboxOpacity() {
       this.get._MAPBOX.setOpacity(this.MapboxOpacity / 100);
