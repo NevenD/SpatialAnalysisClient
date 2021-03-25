@@ -264,7 +264,7 @@ export default {
           .clone()
           .getGeometry()
           .transform("EPSG:3857", "EPSG:4326");
-        const geometryCoords = geometryLine.getCoordinates().toString();
+        const geometryCoords = geometryLine.getCoordinates().join(";");
         // save route coordinates to store
         this.dispatch("_SAVE_ROUTE_COORDINATES_", geometryCoords);
 

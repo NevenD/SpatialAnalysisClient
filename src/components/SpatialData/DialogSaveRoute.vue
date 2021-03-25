@@ -102,7 +102,6 @@ export default {
 
       this.saveMessage = this.get._POST_RETURN_MSG_;
 
-      console.log;
       this.showSaveMessage = true;
       setTimeout(() => {
         this.CloseDialog();
