@@ -282,6 +282,51 @@ export default {
       this.enableFirstRoutePoint = true;
       this.enableSecondRoutePoint = true;
     },
+    async fetchIsochronePolygon(fetchIsochroneDTO) {
+      //delete previous
+      // this.deleteIsochronePolygon();
+
+      await this.LOAD_ASYNC_ISOCHRONE_DATA(fetchIsochroneDTO);
+
+      const featureCoords = this.generateFeatureCoordinates(this.get._ISOCHRONE_COORDINATES_);
+      const vectorRouteLayer = this.get._VECTOR_ISOCHRONE_POLYGON;
+      const vectorRouteSource = vectorRouteLayer.getSource();
+
+      const polygon = new Feature(new Polygon(featureCoords));
+      polygon.setProperties({
+        Range: this.rangeIsochroneTime,
+      });
+
+      const textRange = `Maximum range value of analysis in seconds for time (${this.durationRoute(
+        this.rangeIsochroneTime
+      )}) and  meters for distance (${this.rangeIsochroneDistance} m)`;
+      let isochroneFeature = new Style({
+        fill: new Fill({
+          color: "#5df184ab",
+        }),
+        stroke: new Stroke({
+          color: "#fff",
+          width: 3,
+          lineCap: "square",
+        }),
+        text: new Text({
+          font: "15px Calibri",
+          fill: new Fill({ color: "black" }),
+          stroke: new Stroke({ color: "white" }),
+          text: textRange,
+          offsetY: 24,
+          overflow: true,
+        }),
+      });
+
+      let extent = polygon.getGeometry().getExtent();
+      polygon.getGeometry().transform("EPSG:4326", "EPSG:3857");
+      polygon.setStyle(isochroneFeature);
+      vectorRouteSource.addFeature(polygon);
+      this.get.olMap.getView().fit(extent, { duration: 1500 });
+
+      this.dispatch("_SET_ROUTE_LOADER_", false);
+    },
     durationRoute(time) {
       const minutes = Math.floor(time / 60);
       const seconds = time - minutes * 60;
@@ -347,50 +392,6 @@ export default {
       vectorPointsLayerSource.addFeature(endFeature);
     },
 
-    async fetchIsochronePolygon(fetchIsochroneDTO) {
-      //delete previous
-      // this.deleteIsochronePolygon();
-
-      await this.LOAD_ASYNC_ISOCHRONE_DATA(fetchIsochroneDTO);
-
-      const featureCoords = this.generateFeatureCoordinates(this.get._ISOCHRONE_COORDINATES_);
-      const vectorRouteLayer = this.get._VECTOR_ISOCHRONE_POLYGON;
-      const vectorRouteSource = vectorRouteLayer.getSource();
-
-      const polygon = new Feature(new Polygon(featureCoords));
-      polygon.setProperties({
-        Range: this.rangeIsochroneTime,
-      });
-
-      const textRange = `Maximum range value of analysis in seconds for time (${this.durationRoute(
-        this.rangeIsochroneTime
-      )}) and  meters for distance (${this.rangeIsochroneDistance} m)`;
-      let isochroneFeature = new Style({
-        fill: new Fill({
-          color: "#5df184ab",
-        }),
-        stroke: new Stroke({
-          color: "#fff",
-          width: 3,
-          lineCap: "square",
-        }),
-        text: new Text({
-          font: "15px Calibri",
-          fill: new Stroke({ color: "white" }),
-          text: textRange,
-          offsetY: 24,
-          overflow: true,
-        }),
-      });
-
-      let extent = polygon.getGeometry().getExtent();
-      polygon.getGeometry().transform("EPSG:4326", "EPSG:3857");
-      polygon.setStyle(isochroneFeature);
-      vectorRouteSource.addFeature(polygon);
-      this.get.olMap.getView().fit(extent, { duration: 1500 });
-
-      this.dispatch("_SET_ROUTE_LOADER_", false);
-    },
     centerMap(map) {
       this.get.olMap.getView().animate({
         duration: 700,
