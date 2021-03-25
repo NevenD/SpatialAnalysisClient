@@ -37,7 +37,7 @@
         <v-card-text>
            <div class="text-xs-right">
       <v-tooltip top>
-      <v-btn fab dark small color="green" @click="SaveRoute()" slot="activator">
+      <v-btn fab dark small color="green" @click.once="SaveRoute()" slot="activator">
         <v-icon dark>add</v-icon>
       </v-btn>
      <span>Save route</span>

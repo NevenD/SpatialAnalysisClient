@@ -282,6 +282,11 @@ export default {
       this.enableFirstRoutePoint = true;
       this.enableSecondRoutePoint = true;
     },
+    durationRoute(time) {
+      const minutes = Math.floor(time / 60);
+      const seconds = time - minutes * 60;
+      return `Duration: ${minutes} min and ${Math.round(seconds, 0)} sec`;
+    },
     closeRouteDialog() {
       this.dispatch("_UpdateDialogRouteSettings_", false);
     },
@@ -357,9 +362,9 @@ export default {
         Range: this.rangeIsochroneTime,
       });
 
-      const textRange = `Maximum range value of analysis in seconds for time (${this.rangeIsochroneTime} sec) and  meters for distance (${
-        this.rangeIsochroneDistance
-      } m)`;
+      const textRange = `Maximum range value of analysis in seconds for time (${this.durationRoute(
+        this.rangeIsochroneTime
+      )}) and  meters for distance (${this.rangeIsochroneDistance} m)`;
       let isochroneFeature = new Style({
         fill: new Fill({
           color: "#5df184ab",
