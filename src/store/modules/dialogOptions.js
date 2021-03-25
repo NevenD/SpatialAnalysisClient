@@ -12,6 +12,7 @@ const state = {
   DialogVectorList: false,
   DialogShpVectorList: false,
   DialogRouteSave: false,
+  DialogQuery: false,
 };
 
 const getters = {
@@ -47,6 +48,9 @@ const getters = {
   },
   dialogRouteSave: (sate) => {
     return sate.DialogRouteSave;
+  },
+  dialogQuery: (sate) => {
+    return sate.DialogQuery;
   },
 };
 
@@ -87,6 +91,9 @@ const mutations = {
   _UpdateDialogRouteSave: (state, payload) => {
     state.DialogRouteSave = payload;
   },
+  _UpdateDialogQuery_: (state, payload) => {
+    state.DialogQuery = payload;
+  },
 };
 
 const actions = {
@@ -122,6 +129,9 @@ const actions = {
   },
   _UpdateDialogRouteSave({ commit }, payload) {
     commit("_UpdateDialogRouteSave", payload);
+  },
+  _UpdateDialogQuery_({ commit }, payload) {
+    commit("_UpdateDialogQuery_", payload);
   },
 };
 

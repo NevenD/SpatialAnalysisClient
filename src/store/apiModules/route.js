@@ -50,6 +50,15 @@ export default {
         }
       });
     },
+    async GET_SAVED_ASYNC_DIRECTION_DATA({ commit }, payload) {
+      await _openRouteRepository.getSavedRouteData(payload).then((data) => {
+        const statusRoute = { msg: "" };
+        if (data.data) {
+          console.log(data);
+        } else {
+        }
+      });
+    },
     _SAVE_ROUTE_COORDINATES_({ commit }, payload) {
       commit("SAVE_ROUTE_COORDINATES", payload);
     },

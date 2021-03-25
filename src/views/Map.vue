@@ -9,6 +9,7 @@
     <MeasureDialog></MeasureDialog>
     <MeasureValuesDialog></MeasureValuesDialog>
     <LayersDialog></LayersDialog>
+    <QueryDialog></QueryDialog>
     <v-flex>
       <v-tooltip right>
         <v-btn absolute id="zoomIn" @click="zoomIn()" dark fab top left small color="red" class="mt-5" slot="activator">
@@ -59,6 +60,12 @@
           <span>Measure area/length</span>
         </v-tooltip>
         <v-tooltip left>
+          <v-btn fab dark small @click="queryDialog()" color="red" slot="activator">
+            <v-icon>download</v-icon>
+          </v-btn>
+          <span>Fetch saved route</span>
+        </v-tooltip>
+          <v-tooltip left>
           <v-btn fab dark small @click="settingsDialog()" color="red" slot="activator">
             <v-icon>settings</v-icon>
           </v-btn>
@@ -78,6 +85,8 @@ import Attributions from "@/components/SpatialData/Attributions";
 import MeasureDialog from "@/components/SpatialData/MeasureDialog";
 import MeasureValuesDialog from "@/components/SpatialData/MeasureValuesDialog";
 import LayersDialog from "@/components/SpatialData/LayersDialog";
+import QueryDialog from "@/components/SpatialData/DialogQueryRoute";
+
 import { homeViewMap, attributionControl, formatArea, formatLength } from "../../scripts/mapConfig";
 
 import { MoveDialogs } from "../helpers/vuetifyHelper";
@@ -92,6 +101,7 @@ export default {
     MeasureDialog,
     MeasureValuesDialog,
     LayersDialog,
+    QueryDialog,
   },
   data() {
     return {
@@ -123,6 +133,9 @@ export default {
         zoom: zoom + 1,
         duration: 750,
       });
+    },
+    queryDialog() {
+      this.dispatch("_UpdateDialogQuery_", true);
     },
     settingsDialog() {
       this.dispatch("_UpdateDialogSettings_", true);
