@@ -49,8 +49,18 @@
         <v-card-text>
           <v-layout row>
                 <v-slider
-            v-model="rangeIsochrone"
-            label="Isochrone radius"
+            v-model="rangeIsochroneTime"
+            label="Isochrone time "
+            thumb-label="always"
+            color="success"
+            max="2000"
+            min="100"
+          ></v-slider>
+          </v-layout>
+               <v-layout row>
+                <v-slider
+            v-model="rangeIsochroneDistance"
+            label="Isochrone meters"
             thumb-label="always"
             color="success"
             max="2000"
@@ -102,7 +112,8 @@
 </template>
 <script>
 import LineString from "ol/geom/LineString";
-import { Icon, Style } from "ol/style";
+import Polygon from "ol/geom/Polygon";
+import { Icon, Style, Text, Fill, Stroke } from "ol/style";
 import Feature from "ol/Feature";
 import { mapActions } from "vuex";
 import Point from "ol/geom/Point";
@@ -115,7 +126,8 @@ const mapMenu = require("ol-contextmenu");
 export default {
   data() {
     return {
-      rangeIsochrone: 200,
+      rangeIsochroneTime: 200,
+      rangeIsochroneDistance: 300,
       showError: false,
       showLoader: false,
       startPoint: _startPoint,
@@ -168,7 +180,7 @@ export default {
               callback: this.generatePointForIsochronePolygon,
             },
             {
-              text: "Delete polygon",
+              text: "Delete isochrones",
               classname: "bold",
               icon: "",
               callback: this.deleteIsochronePolygon,
@@ -329,38 +341,85 @@ export default {
       vectorPointsLayerSource.addFeature(startFeature);
       vectorPointsLayerSource.addFeature(endFeature);
     },
+
+    async fetchIsochronePolygon(fetchIsochroneDTO) {
+      //delete previous
+      // this.deleteIsochronePolygon();
+
+      await this.LOAD_ASYNC_ISOCHRONE_DATA(fetchIsochroneDTO);
+
+      const featureCoords = this.generateFeatureCoordinates(this.get._ISOCHRONE_COORDINATES_);
+      const vectorRouteLayer = this.get._VECTOR_ISOCHRONE_POLYGON;
+      const vectorRouteSource = vectorRouteLayer.getSource();
+
+      const polygon = new Feature(new Polygon(featureCoords));
+      polygon.setProperties({
+        Range: this.rangeIsochroneTime,
+      });
+
+      const textRange = `Maximum range value of analysis in seconds for time (${this.rangeIsochroneTime} sec) and  meters for distance (${
+        this.rangeIsochroneDistance
+      } m)`;
+      let isochroneFeature = new Style({
+        fill: new Fill({
+          color: "#5df184ab",
+        }),
+        stroke: new Stroke({
+          color: "#fff",
+          width: 3,
+          lineCap: "square",
+        }),
+        text: new Text({
+          font: "15px Calibri",
+          fill: new Stroke({ color: "white" }),
+          text: textRange,
+          offsetY: 24,
+          overflow: true,
+        }),
+      });
+
+      let extent = polygon.getGeometry().getExtent();
+      polygon.getGeometry().transform("EPSG:4326", "EPSG:3857");
+      polygon.setStyle(isochroneFeature);
+      vectorRouteSource.addFeature(polygon);
+      this.get.olMap.getView().fit(extent, { duration: 1500 });
+
+      this.dispatch("_SET_ROUTE_LOADER_", false);
+    },
     centerMap(map) {
       this.get.olMap.getView().animate({
         duration: 700,
         center: map.coordinate,
       });
     },
-    async generatePointForIsochronePolygon(obj) {
+    generatePointForIsochronePolygon(obj) {
       const transformedFeature = this.transformingFeatureCoordinates(this.createFeatureForIsochrone(obj.coordinate));
 
       const fetchIsochroneDTO = {
-        range: this.rangeIsochrone,
+        range: this.rangeIsochroneTime,
+        distance: this.rangeIsochroneDistance,
         pointLongitude: transformedFeature[0], //15.710697,
         pointLatitude: transformedFeature[1], //46.183814,
         isochroneProfile: this.ProfileSelected,
       };
 
-      await this.LOAD_ASYNC_ISOCHRONE_DATA(fetchIsochroneDTO);
+      this.fetchIsochronePolygon(fetchIsochroneDTO);
 
-      this.dispatch("_SET_ROUTE_LOADER_", false);
       // send tranfo
     },
-    async generatePointForIsochronePolygonDialog() {
-      this.get.olMap.on("singleclick", (evt) => {
+    generatePointForIsochronePolygonDialog() {
+      this.get.olMap.getTargetElement().style.cursor = "pointer";
+      const singleClickEvent = this.get.olMap.once("singleclick", (evt) => {
         const transformedFeature = this.transformingFeatureCoordinates(this.createFeatureForIsochrone(evt.coordinate));
 
         const fetchIsochroneDTO = {
-          range: this.rangeIsochrone,
+          range: this.rangeIsochroneTime,
+          distance: this.rangeIsochroneDistance,
           pointLongitude: transformedFeature[0], //15.710697,
           pointLatitude: transformedFeature[1], //46.183814,
           isochroneProfile: this.ProfileSelected,
         };
-        console.log(fetchIsochroneDTO);
+        this.fetchIsochronePolygon(fetchIsochroneDTO);
       });
     },
     deleteIsochronePolygon() {
