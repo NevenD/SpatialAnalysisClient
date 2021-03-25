@@ -87,25 +87,27 @@ export default {
       this.ResetSaveRouteValues();
     },
     async SaveRoute() {
-      const codeRoute = this.code === null ? "" : this.code.toUpperCase();
-      const routeCreationDTO = {
-        CreatedBy: this.author,
-        Coordinates: this.get._SAVE_ROUTE_COORDINATES_,
-        Code: codeRoute,
-        RouteName: this.routeName,
-        Description: this.description,
-        TripDuration: this.get._SUMMARY_ROUTE_.duration,
-        Length: this.get._SUMMARY_ROUTE_.distance,
-      };
+      if (this.get._SAVE_ROUTE_COORDINATES_ !== null) {
+        const codeRoute = this.code === null ? "" : this.code.toUpperCase();
+        const routeCreationDTO = {
+          CreatedBy: this.author,
+          Coordinates: this.get._SAVE_ROUTE_COORDINATES_,
+          Code: codeRoute,
+          RouteName: this.routeName,
+          Description: this.description,
+          TripDuration: this.get._SUMMARY_ROUTE_.duration,
+          Length: this.get._SUMMARY_ROUTE_.distance,
+        };
 
-      await this.SAVE_ASYNC_DIRECTION_DATA(routeCreationDTO);
+        await this.SAVE_ASYNC_DIRECTION_DATA(routeCreationDTO);
 
-      this.saveMessage = this.get._POST_RETURN_MSG_;
+        this.saveMessage = this.get._POST_RETURN_MSG_;
 
-      this.showSaveMessage = true;
-      setTimeout(() => {
-        this.CloseDialog();
-      }, 200);
+        this.showSaveMessage = true;
+        setTimeout(() => {
+          this.CloseDialog();
+        }, 200);
+      }
     },
     ResetSaveRouteValues() {
       this.author = null;
