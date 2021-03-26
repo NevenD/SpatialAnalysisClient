@@ -2,7 +2,7 @@
   <v-layout row justify-center>
     <v-dialog hide-overlay v-model="FetchRouteDialog" persistent max-width="300px">
       <v-card>
-      <v-card-title class="headline" primary-title>Fetch route by author</v-card-title>
+      <v-card-title class="headline" primary-title>Fetch routes by author</v-card-title>
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
@@ -20,6 +20,12 @@
       </v-btn>
      <span>Fetch route</span>
     </v-tooltip>
+       <v-tooltip top>
+      <v-btn fab dark small color="red" @click.once="DeleteFetchedRoutes()" slot="activator">
+        <v-icon dark>delete_forever</v-icon>
+      </v-btn>
+     <span>Delete fetched routes</span>
+    </v-tooltip>
     <v-tooltip top>
       <v-btn fab light small @click="CloseDialog()" slot="activator">
         <v-icon dark>close</v-icon>
@@ -34,7 +40,9 @@
 </template>
 <script>
 import { mapActions } from "vuex";
-
+import LineString from "ol/geom/LineString";
+import { Icon, Style, Text, Fill, Stroke } from "ol/style";
+import Feature from "ol/Feature";
 export default {
   data() {
     return {
@@ -52,22 +60,80 @@ export default {
     ...mapActions(["GET_SAVED_ASYNC_DIRECTION_DATA"]),
     CloseDialog() {
       this.dispatch("_UpdateDialogQuery_", false);
-      this.ResetSaveRouteValues();
+    },
+    generateFeatureCoordinates(coords) {
+      const featureCoords = [];
+      for (let coord of coords) {
+        let polygonPoints = [coord.latitude, coord.longitude];
+        featureCoords.push(polygonPoints);
+      }
+      return featureCoords;
+    },
+    distanceRoute(val) {
+      if (val > 1000) {
+        let kilometers = val / 1000;
+        return `Route distance: ${Math.round(kilometers, 2)} km`;
+      } else {
+        return `Route distance: ${val} m`;
+      }
+    },
+    durationRoute(time) {
+      const minutes = Math.floor(time / 60);
+      const seconds = time - minutes * 60;
+      return `Duration: ${minutes} min and ${Math.round(seconds, 0)} sec`;
     },
     async QueryRoute() {
       await this.GET_SAVED_ASYNC_DIRECTION_DATA(this.routeAuthor);
       this.saveMessage = this.get._POST_RETURN_MSG_;
+
+      // fetch and parse data
+      const fetchedData = this.get._FETCHED_ROUTES_;
+      const fetchedSource = this.get._FETCHED_ROUTES.getSource();
+
+      for (const route of fetchedData) {
+        const featureCoords = this.generateFeatureCoordinates(route.routeCoordinates);
+        const polygon = new Feature(new LineString(featureCoords));
+
+        const textRange = `Route author: ${route.createdBy}
+                           Route distance: ${this.distanceRoute(route.tripLength)}
+                           Route time: ${this.durationRoute(route.tripDuration)}
+                           Route name: ${route.routeName}
+                           `;
+
+        let style = new Style({
+          stroke: new Stroke({
+            color: "red",
+            width: 3,
+            lineCap: "square",
+          }),
+          text: new Text({
+            font: "15px Calibri",
+            fill: new Fill({ color: "black" }),
+            stroke: new Stroke({ color: "white" }),
+            text: textRange,
+            offsetY: 24,
+            overflow: true,
+          }),
+        });
+
+        polygon.getGeometry().transform("EPSG:4326", "EPSG:3857");
+        polygon.setStyle(style);
+        fetchedSource.addFeature(polygon);
+      }
+
+      let extent = fetchedSource.getExtent();
+      this.get.olMap.getView().fit(extent, { duration: 1500 });
+      // generate features
+
+      // add features to layer
+
       this.showSaveMessage = true;
       setTimeout(() => {
         this.CloseDialog();
       }, 200);
     },
-    ResetSaveRouteValues() {
-      this.author = null;
-      this.routeName = null;
-      this.description = null;
-      this.code = null;
-      this.saveMessage = null;
+    DeleteFetchedRoutes() {
+      this.get._FETCHED_ROUTES.getSource().clear();
     },
   },
 };

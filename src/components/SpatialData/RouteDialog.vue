@@ -249,7 +249,6 @@ export default {
         const featureCoords = this.generateFeatureCoordinates(this.get._DIRECTION_COORDINATES_);
         const vectorRouteLayer = this.get._VECTOR_ROUTE_LAYER;
         const vectorRouteSource = vectorRouteLayer.getSource();
-
         const linestring = new Feature(new LineString(featureCoords));
         let extent = linestring.getGeometry().getExtent();
         linestring.getGeometry().transform("EPSG:4326", "EPSG:3857");

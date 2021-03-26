@@ -169,6 +169,12 @@ let vectorDrawLayer = new Vector({
   style: styleAfterDraw,
 });
 
+let fetchedRoutesLayer = new Vector({
+  source: new VectorSource(),
+  zIndex: 9998,
+  style: styleAfterDraw,
+});
+
 let drawInteractionPointStart = new Draw({
   type: "Point",
   source: vectorDrawLayer.getSource(),
@@ -446,7 +452,7 @@ let map = new Map({
       duration: 750,
     }),
   ]),
-  layers: [dguDofCro, vectorShapes, vectorMeasure, vectorRoute, vectorRoutePoints, vectorDrawLayer, vectorIsochronePolygon],
+  layers: [dguDofCro, vectorShapes, vectorMeasure, vectorRoute, vectorRoutePoints, vectorDrawLayer, vectorIsochronePolygon, fetchedRoutesLayer],
   controls: [],
 });
 let view = new View({
@@ -506,6 +512,7 @@ export {
   drawMeasureArea,
   drawMeasureLength,
   vectorRoute,
+  fetchedRoutesLayer,
   formatArea,
   formatLength,
   vectorMeasure,

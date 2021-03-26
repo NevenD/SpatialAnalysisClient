@@ -89,15 +89,6 @@
                   <v-divider></v-divider>
                   <v-layout row>
                     <v-flex md6>
-                      <v-switch color="success" id="bing" @change="onChangeBing" label="Bing map  "></v-switch>
-                    </v-flex>
-                    <v-flex md6>
-                      <v-slider :inverse-label="true" :disabled="slider.bing" color="green" append-icon="opacity" v-model="BingOpacity" thumb-label></v-slider>
-                    </v-flex>
-                  </v-layout>
-                  <v-divider></v-divider>
-                  <v-layout row>
-                    <v-flex md6>
                       <v-switch color="success" id="topoosm" @change="onChangeTopoOSM" label="Topographic layer  "></v-switch>
                     </v-flex>
                     <v-flex md6>

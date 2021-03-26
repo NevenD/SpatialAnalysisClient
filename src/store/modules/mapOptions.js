@@ -28,6 +28,7 @@ import {
   vectorRoutePoints,
   vectorRouteSelectPoints,
   vectorIsochronePolygon,
+  fetchedRoutesLayer,
 } from "../../../scripts/mapConfig";
 
 const state = {
@@ -91,6 +92,7 @@ const state = {
   VECTOR_ROUTE_POINTS: vectorRoutePoints,
   VECTOR_ROUTE_SELECT_POINTS: vectorRouteSelectPoints,
   VECTOR_ISOCHRONE_POLYGON: vectorIsochronePolygon,
+  FETCHED_ROUTES: fetchedRoutesLayer,
 };
 
 const getters = {
@@ -255,6 +257,9 @@ const getters = {
   },
   _VECTOR_ISOCHRONE_POLYGON: (state) => {
     return state.VECTOR_ISOCHRONE_POLYGON;
+  },
+  _FETCHED_ROUTES: (state) => {
+    return state.FETCHED_ROUTES;
   },
 };
 

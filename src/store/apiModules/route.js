@@ -7,6 +7,7 @@ export default {
     _SAVE_ROUTE_COORDINATES: null,
     _SAVE_ROUTE_DURATION: null,
     _SAVE_ROUTE_LENGHT: null,
+    _FETCHED_ROUTES: null,
   },
   getters: {
     _POST_RETURN_MSG_: (state) => {
@@ -21,6 +22,9 @@ export default {
     _SAVE_ROUTE_LENGHT_: (state) => {
       return state._SAVE_ROUTE_LENGHT;
     },
+    _FETCHED_ROUTES_: (state) => {
+      return state._FETCHED_ROUTES;
+    },
   },
   mutations: {
     SET_ASYNC_POST_RETURN_MSG(state, data) {
@@ -34,6 +38,9 @@ export default {
     },
     SAVE_ROUTE_LENGHT(state, data) {
       state._SAVE_ROUTE_LENGHT = data;
+    },
+    FETCHED_ASYNC_ROUTES(state, data) {
+      state._FETCHED_ROUTES = data;
     },
   },
   actions: {
@@ -54,8 +61,15 @@ export default {
       await _openRouteRepository.getSavedRouteData(payload).then((data) => {
         const statusRoute = { msg: "" };
         if (data.data) {
-          console.log(data);
+          const fetchedRoutes = [];
+          for (let savedRoute of data.data) {
+            fetchedRoutes.push(savedRoute);
+          }
+          commit("FETCHED_ASYNC_ROUTES", fetchedRoutes);
         } else {
+          statusRoute.status = "error";
+          statusRoute.msg = `Could not fetch routes.`;
+          commit("SET_ASYNC_STATUS_MSG", statusRoute);
         }
       });
     },
@@ -70,6 +84,9 @@ export default {
     },
     _SAVE_ROUTE_LENGHT_({ commit }, payload) {
       commit("SAVE_ROUTE_LENGHT", payload);
+    },
+    _FETCHED_ASYNC_ROUTES_({ commit }, payload) {
+      commit("FETCHED_ASYNC_ROUTES", payload);
     },
   },
 };
