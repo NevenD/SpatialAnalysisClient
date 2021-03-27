@@ -11,32 +11,11 @@
     <LayersDialog></LayersDialog>
     <QueryDialog></QueryDialog>
     <v-flex>
-      <v-tooltip right>
-        <v-btn absolute id="zoomIn" @click="zoomIn()" dark fab top left small color="red" class="mt-5" slot="activator">
-          <v-icon>add</v-icon>
+      <v-tooltip right v-for="(mapBtn, index) in mapButtons" :key="index + '_map'">
+        <v-btn absolute  @click="mapBtn.clickEvent" :dark="mapBtn.dark" fab top left small :color="mapBtn.color" :class="mapBtn.class" slot="activator">
+          <v-icon>{{mapBtn.icon}}</v-icon>
         </v-btn>
-        <span>Zoom in</span>
-      </v-tooltip>
-
-      <v-tooltip right>
-        <v-btn absolute id="zoomOut" @click="zoomOut()" dark fab top left small color="red" class="mt-6" slot="activator">
-          <v-icon>remove</v-icon>
-        </v-btn>
-        <span>Zoom out</span>
-      </v-tooltip>
-   
-
-       <v-tooltip right>
-        <v-btn absolute id="home" @click="home()" light fab top left small class="mt-8" slot="activator">
-          <v-icon>home</v-icon>
-        </v-btn>
-        <span>Home view</span>
-      </v-tooltip>
-    <v-tooltip right>
-             <v-btn absolute id="route" @click="routeDialog" fab top left small light class="mt-10" slot="activator">
-          <v-icon>timeline</v-icon>
-        </v-btn>
-        <span>Route settings</span>
+        <span>{{mapBtn.title}}</span>
       </v-tooltip>
       <v-fab-transition>
         <v-btn v-show="!fabRotation" @click="setRotation()" absolute light fab top left small class="mt-9">
@@ -47,29 +26,11 @@
         <v-btn slot="activator" light fab>
           <v-icon>apps</v-icon>
         </v-btn>
-        <v-tooltip left>
-          <v-btn fab @click="layerDialog" dark small color="red" slot="activator">
-            <v-icon>layers</v-icon>
+        <v-tooltip left v-for="(btn, index) in speedButtons" :key="index">
+          <v-btn fab dark small @click="btn.clickEvent" :color="btn.color" slot="activator">
+            <v-icon>{{btn.icon}}</v-icon>
           </v-btn>
-          <span>Select layers</span>
-        </v-tooltip>
-        <v-tooltip left>
-          <v-btn fab dark small @click="measureDialog" color="red" slot="activator">
-            <v-icon>timeline</v-icon>
-          </v-btn>
-          <span>Measure area/length</span>
-        </v-tooltip>
-        <v-tooltip left>
-          <v-btn fab dark small @click="queryDialog()" color="red" slot="activator">
-            <v-icon>download</v-icon>
-          </v-btn>
-          <span>Fetch saved route</span>
-        </v-tooltip>
-          <v-tooltip left>
-          <v-btn fab dark small @click="settingsDialog()" color="red" slot="activator">
-            <v-icon>settings</v-icon>
-          </v-btn>
-          <span>Map settings</span>
+          <span>{{btn.title}}</span>
         </v-tooltip>
       </v-speed-dial>
     </v-flex>
@@ -88,6 +49,8 @@ import LayersDialog from "@/components/SpatialData/LayersDialog";
 import QueryDialog from "@/components/SpatialData/DialogQueryRoute";
 
 import { homeViewMap, attributionControl, formatArea, formatLength } from "../../scripts/mapConfig";
+import distanceDurationMixin from "../mixins/distanceDurationMixin";
+import mapButtonsMixin from "../mixins/mapButtonsMixin";
 
 import { MoveDialogs } from "../helpers/vuetifyHelper";
 
@@ -111,10 +74,9 @@ export default {
       fabRotation: true,
       homeView: homeViewMap,
       AT: attributionControl,
-      dispatch: this.$store.dispatch,
-      get: this.$store.getters,
     };
   },
+  mixins: [distanceDurationMixin, mapButtonsMixin],
   methods: {
     Interactions() {
       // show button for reseting rotation if rotation exists
@@ -164,19 +126,6 @@ export default {
         center: this.homeView,
         duration: 1000,
       });
-    },
-    distanceRoute(val) {
-      if (val > 1000) {
-        let kilometers = val / 1000;
-        return `Route distance: ${Math.round(kilometers, 2)} km`;
-      } else {
-        return `Route distance: ${val} m`;
-      }
-    },
-    durationRoute(time) {
-      const minutes = Math.floor(time / 60);
-      const seconds = time - minutes * 60;
-      return `Duration: ${minutes} min and ${Math.round(seconds, 0)} sec`;
     },
     firstLetterUpper(text) {
       const removeDash = text.replace("-", " ");

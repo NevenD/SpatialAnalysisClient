@@ -13,26 +13,14 @@
           </v-container>
         </v-card-text>
         <v-card-text>
-           <div class="text-xs-right">
-      <v-tooltip top>
-      <v-btn fab dark small color="green" @click.once="QueryRoute()" slot="activator">
-        <v-icon dark>add</v-icon>
-      </v-btn>
-     <span>Fetch route</span>
-    </v-tooltip>
-       <v-tooltip top>
-      <v-btn fab dark small color="red" @click.once="DeleteFetchedRoutes()" slot="activator">
-        <v-icon dark>delete_forever</v-icon>
-      </v-btn>
-     <span>Delete fetched routes</span>
-    </v-tooltip>
-    <v-tooltip top>
-      <v-btn fab light small @click="CloseDialog()" slot="activator">
-        <v-icon dark>close</v-icon>
-      </v-btn>
-     <span>Close</span>
-    </v-tooltip>
-    </div>
+        <div class="text-xs-right">
+            <v-tooltip top v-for="btn in buttons" :key="btn.title" >
+              <v-btn fab :dark="btn.dark" small :color="btn.color" @click.once="btn.clickEvent" slot="activator" >
+                <v-icon dark>{{btn.icon}}</v-icon>
+              </v-btn>
+              <span>{{btn.title}}</span>
+            </v-tooltip>
+       </div>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -40,13 +28,16 @@
 </template>
 <script>
 import { mapActions } from "vuex";
+import distanceDurationMixin from "../../mixins/distanceDurationMixin";
+import fabButtonsMixin from "../../mixins/fabButtonsMixin";
+
 import LineString from "ol/geom/LineString";
 import { Icon, Style, Text, Fill, Stroke } from "ol/style";
 import Feature from "ol/Feature";
 export default {
   data() {
     return {
-      routeAuthor: null,
+      routeAuthor: "",
       get: this.$store.getters,
       dispatch: this.$store.dispatch,
     };
@@ -56,6 +47,7 @@ export default {
       return this.get.dialogQuery;
     },
   },
+  mixins: [distanceDurationMixin, fabButtonsMixin],
   methods: {
     ...mapActions(["GET_SAVED_ASYNC_DIRECTION_DATA"]),
     CloseDialog() {
@@ -68,19 +60,6 @@ export default {
         featureCoords.push(polygonPoints);
       }
       return featureCoords;
-    },
-    distanceRoute(val) {
-      if (val > 1000) {
-        let kilometers = val / 1000;
-        return `Route distance: ${Math.round(kilometers, 2)} km`;
-      } else {
-        return `Route distance: ${val} m`;
-      }
-    },
-    durationRoute(time) {
-      const minutes = Math.floor(time / 60);
-      const seconds = time - minutes * 60;
-      return `Duration: ${minutes} min and ${Math.round(seconds, 0)} sec`;
     },
     async QueryRoute() {
       await this.GET_SAVED_ASYNC_DIRECTION_DATA(this.routeAuthor);
@@ -120,13 +99,10 @@ export default {
         polygon.setStyle(style);
         fetchedSource.addFeature(polygon);
       }
-
       let extent = fetchedSource.getExtent();
-      this.get.olMap.getView().fit(extent, { duration: 1500 });
-      // generate features
-
-      // add features to layer
-
+      if (extent[0] !== Infinity) {
+        this.get.olMap.getView().fit(extent, { duration: 1500 });
+      }
       this.showSaveMessage = true;
       setTimeout(() => {
         this.CloseDialog();
