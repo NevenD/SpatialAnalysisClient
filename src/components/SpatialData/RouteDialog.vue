@@ -21,7 +21,7 @@
     >
       <v-card color="white">
         <v-card-text>
-          Fetching data, please wait...
+          Loading, please wait...
           <v-progress-linear
             indeterminate
             color="black"

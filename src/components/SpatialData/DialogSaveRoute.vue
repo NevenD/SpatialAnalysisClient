@@ -88,6 +88,7 @@ export default {
     },
     async SaveRoute() {
       if (this.get._SAVE_ROUTE_COORDINATES_ !== null) {
+        this.dispatch("_SET_ROUTE_LOADER_", true);
         const codeRoute = this.code === null ? "" : this.code.toUpperCase();
         const routeCreationDTO = {
           CreatedBy: this.author,
@@ -104,6 +105,7 @@ export default {
         this.saveMessage = this.get._POST_RETURN_MSG_;
 
         this.showSaveMessage = true;
+        this.dispatch("_SET_ROUTE_LOADER_", false);
         setTimeout(() => {
           this.CloseDialog();
         }, 200);
