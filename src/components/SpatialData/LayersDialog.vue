@@ -8,24 +8,6 @@
           <v-expansion-panel light popout>
             <v-expansion-panel-content>
               <v-icon slot="actions" color="success">$vuetify.icons.expand</v-icon>
-              <div slot="header">Vector Layers</div>
-              <v-card>
-                <v-card-text class="grey lighten-3">
-                  <v-layout row>
-                    <v-flex md6>
-                      <v-switch v-model="vectorSwitch" color="success"  @change="onChangeVector" label="Routes"></v-switch>
-                    </v-flex>
-                    <v-flex md6>
-                      <v-slider :inverse-label="true" :disabled="slider.vector" color="green" append-icon="opacity" v-model="VectorOpacity" thumb-label></v-slider>
-                    </v-flex>
-                  </v-layout>
-                </v-card-text>
-              </v-card>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-          <v-expansion-panel light popout>
-            <v-expansion-panel-content>
-              <v-icon slot="actions" color="success">$vuetify.icons.expand</v-icon>
               <div slot="header">Croatia Base Maps</div>
               <v-card>
                 <v-card-text class="grey lighten-3">
