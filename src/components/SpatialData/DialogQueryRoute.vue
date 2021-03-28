@@ -62,6 +62,8 @@ export default {
       return featureCoords;
     },
     async QueryRoute() {
+      this.dispatch("_SET_ROUTE_LOADER_", true);
+
       await this.GET_SAVED_ASYNC_DIRECTION_DATA(this.routeAuthor);
       this.saveMessage = this.get._POST_RETURN_MSG_;
 
@@ -103,6 +105,8 @@ export default {
       if (extent[0] !== Infinity) {
         this.get.olMap.getView().fit(extent, { duration: 1500 });
       }
+      this.dispatch("_SET_ROUTE_LOADER_", false);
+
       this.showSaveMessage = true;
       setTimeout(() => {
         this.CloseDialog();

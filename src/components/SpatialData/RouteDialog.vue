@@ -243,7 +243,8 @@ export default {
         EndLongitude: this.endLong,
         EndLatitude: this.endLat,
       };
-      this.showLoader = true;
+      this.dispatch("_SET_ROUTE_LOADER_", true);
+
       await this.LOAD_ASYNC_DIRECTION_DATA(getRouteDTO);
       if (this.get._STATUS_MSG_.status === "success") {
         const featureCoords = this.generateFeatureCoordinates(this.get._DIRECTION_COORDINATES_);
@@ -282,8 +283,7 @@ export default {
       this.enableSecondRoutePoint = true;
     },
     async fetchIsochronePolygon(fetchIsochroneDTO) {
-      //delete previous
-      // this.deleteIsochronePolygon();
+      this.dispatch("_SET_ROUTE_LOADER_", true);
 
       await this.LOAD_ASYNC_ISOCHRONE_DATA(fetchIsochroneDTO);
 
@@ -390,7 +390,6 @@ export default {
       vectorPointsLayerSource.addFeature(startFeature);
       vectorPointsLayerSource.addFeature(endFeature);
     },
-
     centerMap(map) {
       this.get.olMap.getView().animate({
         duration: 700,
@@ -409,8 +408,6 @@ export default {
       };
 
       this.fetchIsochronePolygon(fetchIsochroneDTO);
-
-      // send tranfo
     },
     generatePointForIsochronePolygonDialog() {
       this.get.olMap.getTargetElement().style.cursor = "pointer";
